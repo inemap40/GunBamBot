@@ -1,0 +1,8 @@
+±∫π„¿Ã º∫¥…
+```css
+Galaxy Book Ion 15.6
+{CPU: Intel i7-10510U (4.3GHz)}
+{GPU: NVIDIA Geforce MX250}
+{RAM: 32GB Dual}
+{ROM: 1TB + 1TB + 256GB}
+```
