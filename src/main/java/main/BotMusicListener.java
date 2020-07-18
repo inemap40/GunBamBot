@@ -134,150 +134,148 @@ public class BotMusicListener extends ListenerAdapter {
 	@Override
 	public void onReady(ReadyEvent event) {
 		
-        	TextChannel t = event.getJDA().getGuildById(base).getTextChannelById("679204476808069120");
-        	voiceTc = event.getJDA().getGuildById(base).getTextChannelById(baseVoice);
-        	logtc = event.getJDA().getTextChannelById("686517298470846495");
+        TextChannel t = event.getJDA().getGuildById(base).getTextChannelById("679204476808069120");
+        voiceTc = event.getJDA().getGuildById(base).getTextChannelById(baseVoice);
+        logtc = event.getJDA().getTextChannelById("686517298470846495");
         	
-        	gunbamStartTime = System.currentTimeMillis();
+        gunbamStartTime = System.currentTimeMillis();
         	
-        	Runnable remove1 = () -> {
+        Runnable remove1 = () -> {
+	        try {
+		        MessageHistory mh1 = new MessageHistory(t);
+		        List<Message> mh11 = mh1.retrievePast(7).complete();
+
+		        try {
+		        	t.deleteMessages(mh11).complete();
+		        }
+		        catch(Exception e) {
+		        	for(int i = 0; i<7; i++) {
+		        		try {
+		        			mh11.get(i).delete().complete();
+		        		}
+		        		catch(Exception f) {}
+			        }
+		        }
+	
+		        //t.deleteMessages(mh1.retrievePast(7).complete()).complete();
+	        }
+	        catch(Exception e) {
 	        	try {
-		        	MessageHistory mh1 = new MessageHistory(t);
-		        	List<Message> mh11 = mh1.retrievePast(7).complete();
-
-		        	try {
-		        		t.deleteMessages(mh11).complete();
-		        	}
-		        	catch(Exception e) {
-		        		for(int i = 0; i<7; i++) {
-		        			try {
-		        				mh11.get(i).delete().complete();
-		        			}
-		        			catch(Exception f) {}
-			        	}
-		        	}
-	
-		            //t.deleteMessages(mh1.retrievePast(7).complete()).complete();
-	        	}
-	        	catch(Exception e) {
-	        		try {
 	        			
-		    			MessageHistory mh1 = new MessageHistory(t);
-		    			List<Message> mh11 = mh1.retrievePast(3).complete();
+		    		MessageHistory mh1 = new MessageHistory(t);
+		    		List<Message> mh11 = mh1.retrievePast(3).complete();
 	        			
-			        	mh11.get(0).delete().complete();
+			        mh11.get(0).delete().complete();
 			            
-	        		}
-	        		catch(Exception f) {}
 	        	}
+	        	catch(Exception f) {}
+	        }
 	        	
-	        	t.sendMessage("군밤이 가동을 시작했어요").queue();
-			    System.out.println("BOT: 군밤이 가동을 시작어요");
-        	};
+	        t.sendMessage("군밤이 가동을 시작했어요").queue();
+			System.out.println("BOT: 군밤이 가동을 시작어요");
+        };
         	
-        	if(Main.num.equals("1")) {
-	        	Runnable remove2 = () -> {
-		        	File file = new File(BotMusicListener.directoryDefault + "guild/removeVoiceStateMessages.txt");
-		        	int remove = 0;
+        if(Main.num.equals("1")) {
+	        Runnable remove2 = () -> {
+		    	File file = new File(BotMusicListener.directoryDefault + "guild/removeVoiceStateMessages.txt");
+		        int remove = 0;
 		        	
-		    		try {
-		    			FileReader filereader = new FileReader(file);
+		    	try {
+		    		FileReader filereader = new FileReader(file);
 		    	       
-		    	        BufferedReader bufReader = new BufferedReader(filereader);
-		    	        String line = "";
+		    	    BufferedReader bufReader = new BufferedReader(filereader);
+		    	    String line = "";
 		    	        
-		    	        while((line = bufReader.readLine()) != null){
-		    	        	remove = Integer.parseInt(line);
-		    	        }
+		    	    while((line = bufReader.readLine()) != null){
+		    	        remove = Integer.parseInt(line);
+		    	    }
 		    	               
-		    	        bufReader.close();
-		    		}
-		    		catch(Exception e) {
-		    			t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-		    		}
+		    	    bufReader.close();
+		    	}
+		    	catch(Exception e) {
+		    		t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+		    	}
 		    		
-		    		try {
-		    			if(remove > 1) {
-				        	MessageHistory mh1 = new MessageHistory(voiceTc);
-				        	List<Message> mh11 = mh1.retrievePast(remove).complete();
-				        	for(int i = 0; i<remove; i++) 
-				        		mh11.get(i).delete().complete();
-				            //voiceTc.deleteMessages(mh1.retrievePast(remove).complete()).complete();
-		    			}
+		    	try {
+		    		if(remove > 1) {
+				        MessageHistory mh1 = new MessageHistory(voiceTc);
+				        List<Message> mh11 = mh1.retrievePast(remove).complete();
+				        for(int i = 0; i<remove; i++) 
+				        	mh11.get(i).delete().complete();
+				        //voiceTc.deleteMessages(mh1.retrievePast(remove).complete()).complete();
+		    		}
 		    			
-		    			else if(remove == 1) {
+		    		else if(remove == 1) {
 		    				
-		    				MessageHistory mh1 = new MessageHistory(voiceTc);
-		    				List<Message> mh11 = mh1.retrievePast(3).complete();
-		    				mh11.get(0).delete().complete();
-				            //voiceTc.deleteMessages(mh1.retrievePast(3).complete()).complete();
-		    			}
+		    			MessageHistory mh1 = new MessageHistory(voiceTc);
+		    			List<Message> mh11 = mh1.retrievePast(3).complete();
+		    			mh11.get(0).delete().complete();
+				        //voiceTc.deleteMessages(mh1.retrievePast(3).complete()).complete();
+		    		}
 	
-		        	}
-		        	catch(Exception e) {
-		        		t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-		        	}
+		        }
+		        catch(Exception e) {
+		        	t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+		        }
 		    		
-		    		try {
-		    		    FileWriter fw2 = new FileWriter(file);
-		    		    fw2.write(String.valueOf(0));
-		    		    fw2.close();
-		    		}
-		    		catch (Exception e) {
-		    			e.printStackTrace();
-		    		    t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();  
-		    		}
+		    	try {
+		    		FileWriter fw2 = new FileWriter(file);
+		    		fw2.write(String.valueOf(0));
+		    		fw2.close();
+		    	}
+		    	catch (Exception e) {
+		    		e.printStackTrace();
+		    		t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();  
+		    	}
 	
-	        	};
-	        	Thread t2 = new Thread(remove2);
-	        	t2.start();
+	        };
+	        Thread t2 = new Thread(remove2);
+	        t2.start();
 	        	
-	        	Runnable send = () -> {
-					File file = new File(BotMusicListener.directoryDefault + "guild/usingGuilds.txt");
+	        Runnable send = () -> {
+				File file = new File(BotMusicListener.directoryDefault + "guild/usingGuilds.txt");
 					
-					try{   
-			            FileReader filereader = new FileReader(file);
-			            BufferedReader bufReader  =  new BufferedReader(filereader);
+				try{   
+			        FileReader filereader = new FileReader(file);
+			        BufferedReader bufReader  =  new BufferedReader(filereader);
 		
-			            String line = "";
-			            while((line = bufReader.readLine()) != null){
-			            	try {
-				            	event.getJDA().getTextChannelById(line.split("/")[1]).sendMessage(":mega: 봇이 " + Main.because + " 되었어요").queue();
-				            	logtc.sendMessage(":mega: `(" + event.getJDA().getGuildById(line.split("/")[0]).getName() + ")` 봇이 " + Main.because + " 되었어요").queue();
-			            	}
-			            	catch(Exception e) {
-			            		
-			            	}
+			        String line = "";
+			        while((line = bufReader.readLine()) != null){
+			            try {
+				            event.getJDA().getTextChannelById(line.split("/")[1]).sendMessage(":mega: 봇이 " + Main.because + " 되었어요").queue();
+				            logtc.sendMessage(":mega: `(" + event.getJDA().getGuildById(line.split("/")[0]).getName() + ")` 봇이 " + Main.because + " 되었어요").queue();
 			            }
-			            //.readLine()은 끝에 개행문자를 읽지 않는다.            
-			            bufReader.close();
+			            catch(Exception e) {}
+			        }
+			        //.readLine()은 끝에 개행문자를 읽지 않는다.            
+			        bufReader.close();
 			            
-			            FileWriter fw = new FileWriter(file, false);
-						fw.write("");
-						fw.close();
-			        }
-					catch(Exception e){
-			            System.out.println(e);
-			            t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-			        }
-	        	};
+			        FileWriter fw = new FileWriter(file, false);
+					fw.write("");
+					fw.close();
+			    }
+				catch(Exception e){
+			        System.out.println(e);
+			        t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+			    }
+	        };
 	        	
-	        	Thread t3 = new Thread(send);
-	        	t3.start();
-        	}
+	        Thread t3 = new Thread(send);
+	        t3.start();
+        }
     
-        	MusicController.prepare(adtc, null, null);
+        MusicController.prepare(adtc, null, null);
         	
-        	Thread t1 = new Thread(remove1);
-        	t1.start();
+        Thread t1 = new Thread(remove1);
+        t1.start();
         	
 
-        	/*
-		    voiceTc.sendMessage("**" + event.getJDA().getGuildById(base).getName() + "** \n```css\n(오프라인)```").queue(response -> {
-			 		voiceTcMessage.put(event.getJDA().getGuildById(base), response.getId());
+        /*
+		voiceTc.sendMessage("**" + event.getJDA().getGuildById(base).getName() + "** \n```css\n(오프라인)```").queue(response -> {
+			voiceTcMessage.put(event.getJDA().getGuildById(base), response.getId());
 
-			});
-			*/
+		});
+		*/
 		    
 	}
 	
