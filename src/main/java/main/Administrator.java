@@ -15,23 +15,23 @@ public class Administrator extends BotMusicListener {
 	public static void admin(TextChannel tc, Message msg, Guild guild, User user, MessageReceivedEvent event) {
 
 		
-		Scanner scanner = new Scanner(System.in);
+	Scanner scanner = new Scanner(System.in);
 	    String str = scanner.nextLine();
 	    tc = general;
     	
 	    if(str.equalsIgnoreCase("/logout")) {
 	    	/*
 	    	tc.sendMessage("/logout").queue();
-        	tc.sendMessage("```°ü¸®ÀÚ ·Î±×¾Æ¿ô```").queue();
+        	tc.sendMessage("```ê´€ë¦¬ì ë¡œê·¸ì•„ì›ƒ```").queue();
         	
         	MessageHistory mh = new MessageHistory(tc);
             List<Message> msgs = mh.retrievePast(2).complete();
             tc.deleteMessages(msgs).complete();
         	
-            tc.sendMessage("```º¿À» ´Ù½Ã Àç»ıÇÕ´Ï´Ù```").queue();
+            tc.sendMessage("```ë´‡ì„ ë‹¤ì‹œ ì¬ìƒí•©ë‹ˆë‹¤```").queue();
             */
         	
-        	System.out.println("·Î±×¾Æ¿ôÇÕ´Ï´Ù");
+        	System.out.println("ë¡œê·¸ì•„ì›ƒí•©ë‹ˆë‹¤");
         	BotMusicListener.administrator = 0;
         	
         }
