@@ -51,47 +51,9 @@ import functions.*;
 
 
 public class BotMusicListener extends ListenerAdapter {
-	
-	//»õº®¹İ
-	// CHANNEL #1(539392855383212032)
-	// CHANNEL #2(553263893309423619)
-	// CHANNEL #3(553263926851403787)
-	// CHANNEL #4(553363287958487050)
-	// CHANNEL #5(553363447442833421)
-	// CHANNEL #6(656487163793506305)
-	
-	// 2ÀÎ½Ç #1(656482527438962708)
-	// 2ÀÎ½Ç #2(656482588826796032)
-	// 2ÀÎ½Ç #3(657829301999370261)
-	// 3ÀÎ½Ç #1(656482606174568458)
-	// 3ÀÎ½Ç #2(664072238470922250)
-	
-	//POKEMON
-	// POKEMON (586964043353554996)
 
-	//STUDY-ROOM
-	// 1(568034740704247839)
-	// 2(568036888615583760)
-	// 3(568036904654733322)
-
-	//MOBILE
-	// MOBILE #1(567450762121314346)
-	// MOBILE #2(567450806702440458)
-
-	//KARAOKE
-	// #1(539391136263962624)
-	// #2(539391150851620884)
-	// #3(539391174394511361)
-
-	//ETC
-	// BOB(546130598608109599)
-	// TV(553678247708196904)
-	// zZZ(546130638315454474)
-	// ...(553264622703214596)
-
-	
-	public static String chatVersion = "2020³â 6¿ù";
-	public static String musicVersion = "2020³â 7¿ù";
+	public static String chatVersion = "2020ë…„ 6ì›”";
+	public static String musicVersion = "2020ë…„ 7ì›”";
 	public static String musicVersionEng = "2020.07";
 	
 	CustomFunctions func = new CustomFunctions();
@@ -143,7 +105,7 @@ public class BotMusicListener extends ListenerAdapter {
 	public static StringBuilder voiceStats(StringBuilder s, List<Member> members) {
 		
 		 if(members.size() == 0) {
-		 	s.append("À½¼ºÃ¤³Î¿¡ ¾Æ¹«µµ ¾ø¾î¿ä");
+		 	s.append("ìŒì„±ì±„ë„ì— ì•„ë¬´ë„ ì—†ì–´ìš”");
 		 }
 		 else {
 			 for(int i=0; i<members.size(); i++) {
@@ -209,8 +171,8 @@ public class BotMusicListener extends ListenerAdapter {
 	        		catch(Exception f) {}
 	        	}
 	        	
-	        	t.sendMessage("±º¹ãÀÌ °¡µ¿À» ½ÃÀÛÇß¾î¿ä").queue();
-			    System.out.println("BOT: ±º¹ãÀÌ °¡µ¿À» ½ÃÀÛÁ™¾î¿ä");
+	        	t.sendMessage("êµ°ë°¤ì´ ê°€ë™ì„ ì‹œì‘í–ˆì–´ìš”").queue();
+			    System.out.println("BOT: êµ°ë°¤ì´ ê°€ë™ì„ ì‹œì‘Â™ì–´ìš”");
         	};
         	
         	if(Main.num.equals("1")) {
@@ -280,14 +242,14 @@ public class BotMusicListener extends ListenerAdapter {
 			            String line = "";
 			            while((line = bufReader.readLine()) != null){
 			            	try {
-				            	event.getJDA().getTextChannelById(line.split("/")[1]).sendMessage(":mega: º¿ÀÌ " + Main.because + " µÇ¾ú¾î¿ä").queue();
-				            	logtc.sendMessage(":mega: `(" + event.getJDA().getGuildById(line.split("/")[0]).getName() + ")` º¿ÀÌ " + Main.because + " µÇ¾ú¾î¿ä").queue();
+				            	event.getJDA().getTextChannelById(line.split("/")[1]).sendMessage(":mega: ë´‡ì´ " + Main.because + " ë˜ì—ˆì–´ìš”").queue();
+				            	logtc.sendMessage(":mega: `(" + event.getJDA().getGuildById(line.split("/")[0]).getName() + ")` ë´‡ì´ " + Main.because + " ë˜ì—ˆì–´ìš”").queue();
 			            	}
 			            	catch(Exception e) {
 			            		
 			            	}
 			            }
-			            //.readLine()Àº ³¡¿¡ °³Çà¹®ÀÚ¸¦ ÀĞÁö ¾Ê´Â´Ù.            
+			            //.readLine()ì€ ëì— ê°œí–‰ë¬¸ìë¥¼ ì½ì§€ ì•ŠëŠ”ë‹¤.            
 			            bufReader.close();
 			            
 			            FileWriter fw = new FileWriter(file, false);
@@ -311,7 +273,7 @@ public class BotMusicListener extends ListenerAdapter {
         	
 
         	/*
-		    voiceTc.sendMessage("**" + event.getJDA().getGuildById(base).getName() + "** \n```css\n(¿ÀÇÁ¶óÀÎ)```").queue(response -> {
+		    voiceTc.sendMessage("**" + event.getJDA().getGuildById(base).getName() + "** \n```css\n(ì˜¤í”„ë¼ì¸)```").queue(response -> {
 			 		voiceTcMessage.put(event.getJDA().getGuildById(base), response.getId());
 
 			});
@@ -321,7 +283,7 @@ public class BotMusicListener extends ListenerAdapter {
 	
 	@Override
 	public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
-		if(event.getGuild().getId().equals(born)) { //»õº®¹İ
+		if(event.getGuild().getId().equals(born)) { //ìƒˆë²½ë°˜
 			String name = event.getMember().getNickname();
 
 			String id = event.getMember().getId();
@@ -411,9 +373,9 @@ public class BotMusicListener extends ListenerAdapter {
 	    	StringBuilder s = new StringBuilder();
 	    	StringBuilder t = new StringBuilder();
 	    	
-	    	String title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+	    	String title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 	    	if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-	    		title = "**(ÀÏ½ÃÁ¤Áö) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+	    		title = "**(ì¼ì‹œì •ì§€) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 	    	}
 	    	
 	    	s.append(title);
@@ -440,8 +402,8 @@ public class BotMusicListener extends ListenerAdapter {
 	
 	@Override
     public void onDisconnect(DisconnectEvent event) {
-		jdatc.sendMessage("¿¬°á ²÷±è ÄÚµå: **" + event.getCloseCode() + "** `" + event.getClientCloseFrame() + "`").queue();
-		System.out.println("¿¬°á ²÷±è ÄÚµå: **" + event.getCloseCode() + "**, " + event.getClientCloseFrame());
+		jdatc.sendMessage("ì—°ê²° ëŠê¹€ ì½”ë“œ: **" + event.getCloseCode() + "** `" + event.getClientCloseFrame() + "`").queue();
+		System.out.println("ì—°ê²° ëŠê¹€ ì½”ë“œ: **" + event.getCloseCode() + "**, " + event.getClientCloseFrame());
 		
 		if(event.getClientCloseFrame().getCloseCode() == 1008||event.getClientCloseFrame().getCloseCode() == 1000) {
 			MusicController.disconnect(event.getClientCloseFrame().getCloseCode(), event);
@@ -457,7 +419,7 @@ public class BotMusicListener extends ListenerAdapter {
 	
 	@Override
     public void onResume(ResumedEvent event) {
-		jdatc.sendMessage("Àç¿¬°áµÊ").queue();
+		jdatc.sendMessage("ì¬ì—°ê²°ë¨").queue();
 	}
 	
 	@Override
@@ -489,10 +451,10 @@ public class BotMusicListener extends ListenerAdapter {
 		    	String title = "";
 				
 				if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-			    	title = "**(ÀÏ½ÃÁ¤Áö) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+			    	title = "**(ì¼ì‹œì •ì§€) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 				}
 				else {
-					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 				}
 				
 				s.append(title);
@@ -548,10 +510,10 @@ public class BotMusicListener extends ListenerAdapter {
 		    	String title = "";
 				
 				if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-			    	title = "**(ÀÏ½ÃÁ¤Áö) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+			    	title = "**(ì¼ì‹œì •ì§€) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 				}
 				else {
-					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 				}
 				
 				s.append(title);
@@ -598,10 +560,10 @@ public class BotMusicListener extends ListenerAdapter {
 		    	String title = "";
 				
 				if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-			    	title = "**(ÀÏ½ÃÁ¤Áö) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+			    	title = "**(ì¼ì‹œì •ì§€) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 				}
 				else {
-					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 				}
 	
 		    	s.append(title);
@@ -671,9 +633,9 @@ public class BotMusicListener extends ListenerAdapter {
 			StringBuilder s = new StringBuilder();
 			StringBuilder t = new StringBuilder();
 			
-			String title = "**" + event.getGuild().getName() + "/" + event.getChannelLeft().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+			String title = "**" + event.getGuild().getName() + "/" + event.getChannelLeft().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 			if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-				title = "**(ÀÏ½ÃÁ¤Áö) " + event.getGuild().getName() + "/" + event.getChannelLeft().getName() + "**ÀÇ ÀÎ¿ø (" + members.size() + "¸í)\n```css\n";
+				title = "**(ì¼ì‹œì •ì§€) " + event.getGuild().getName() + "/" + event.getChannelLeft().getName() + "**ì˜ ì¸ì› (" + members.size() + "ëª…)\n```css\n";
 			}
 			
 			s.append(title);
@@ -703,11 +665,11 @@ public class BotMusicListener extends ListenerAdapter {
 		String eachId = voiceTcMessage.get(guild);
 		/*
 		try {
-			voiceTc.editMessageById(eachId, "**" + guild.getName() + "** \n```css\n(¿ÀÇÁ¶óÀÎ)```").complete();
+			voiceTc.editMessageById(eachId, "**" + guild.getName() + "** \n```css\n(ì˜¤í”„ë¼ì¸)```").complete();
 		}
 		
 		catch(Exception e){
-			voiceTc.sendMessage("**" + guild.getName() + "** \n```css\n(¿ÀÇÁ¶óÀÎ)```").queue(response -> {
+			voiceTc.sendMessage("**" + guild.getName() + "** \n```css\n(ì˜¤í”„ë¼ì¸)```").queue(response -> {
 			 		voiceTcMessage.put(guild, response.getId());
 
 			 	});
@@ -748,8 +710,8 @@ public class BotMusicListener extends ListenerAdapter {
         	return;
         }
         
-        if(user.toString().contains(bot)) { //±º¹ã
-            if(msg.getContentRaw().equals("¤Ó³ª°¡±â")||msg.getContentRaw().equals("$³ª°¡±â")) {
+        if(user.toString().contains(bot)) { //êµ°ë°¤
+            if(msg.getContentRaw().equals("ã…£ë‚˜ê°€ê¸°")||msg.getContentRaw().equals("$ë‚˜ê°€ê¸°")) {
             	Guild guild = event.getGuild();
             	
                 if(guild.getId().equals(born)) {
@@ -764,7 +726,7 @@ public class BotMusicListener extends ListenerAdapter {
         if(listen == 1) {
         	if(tc.toString().contains(dokingStr)) {
         		Date date = new Date();
-	        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+	        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
 	    		String str = dayTime.format(date);
 	        	
 	        	listentc.sendMessage(".\n.\n" + str + "\n" + guild1 + "\n" + user.toString() + ": " + msg.getContentRaw() + "\n").queue();
@@ -800,9 +762,9 @@ public class BotMusicListener extends ListenerAdapter {
         
 	    
         if(tc.toString().contains("662897914405715978")) {
-        	if(msg.getContentRaw().equals("»ç¿ë¹ı")) {
+        	if(msg.getContentRaw().equals("ì‚¬ìš©ë²•")) {
         		if(send == 0) {
-        			tc.sendMessage("±º¹ã»ç¿ë¹ıÀ¸·Î ¾Ë¾Æº¸°Å³ª Haribo ¾²´Â °Í Ã³·³ ½áºÁ¿ä").queue();
+        			tc.sendMessage("êµ°ë°¤ì‚¬ìš©ë²•ìœ¼ë¡œ ì•Œì•„ë³´ê±°ë‚˜ Haribo ì“°ëŠ” ê²ƒ ì²˜ëŸ¼ ì¨ë´ìš”").queue();
         			send = 1;
         		}
         	}
@@ -812,29 +774,29 @@ public class BotMusicListener extends ListenerAdapter {
         if(user.isBot())  {
         	return;}
  
-        if(msg.getContentRaw().toString().contains("¤Ó")) {}
+        if(msg.getContentRaw().toString().contains("ã…£")) {}
         else {
         	if(guild1.getId().equals(born))
         		recentId = msg.getId();
         }
      
        
-        if(msg.getContentRaw().contains("±º¹ã")&& (msg.getContentRaw().contains("¼³¸í¼­") || msg.getContentRaw().contains("»ç¿ë¹ı") || msg.getContentRaw().contains("µµ¿ò¸»"))){
+        if(msg.getContentRaw().contains("êµ°ë°¤")&& (msg.getContentRaw().contains("ì„¤ëª…ì„œ") || msg.getContentRaw().contains("ì‚¬ìš©ë²•") || msg.getContentRaw().contains("ë„ì›€ë§"))){
         	System.out.println("");
     		System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
     		Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
         	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	Controller.help(tc, msg, event, "kor");
         	
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("ÀÏÀü")||msg.getContentRaw().contains("ÀÏ Àü"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ì¼ì „")||msg.getContentRaw().contains("ì¼ ì „"))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
         	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	String minus = msg.getContentRaw().replaceAll("[^0-9]", "");
@@ -849,11 +811,11 @@ public class BotMusicListener extends ListenerAdapter {
         	}
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("ÀÏµÚ")||msg.getContentRaw().contains("ÀÏ ÈÄ")||msg.getContentRaw().contains("ÀÏÈÄ")||msg.getContentRaw().contains("ÀÏ µÚ"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ì¼ë’¤")||msg.getContentRaw().contains("ì¼ í›„")||msg.getContentRaw().contains("ì¼í›„")||msg.getContentRaw().contains("ì¼ ë’¤"))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
         	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	String plus = msg.getContentRaw().replaceAll("[^0-9]", "");
@@ -870,65 +832,65 @@ public class BotMusicListener extends ListenerAdapter {
         	
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("¿À´Ã")&&(msg.getContentRaw().contains("ÀÏ")||msg.getContentRaw().contains("Ä¥"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("ì˜¤ëŠ˜")&&(msg.getContentRaw().contains("ì¼")||msg.getContentRaw().contains("ì¹ "))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	
         	Command.today(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("´ÙÀ½ ´Ş±îÁö")||msg.getContentRaw().contains("´ÙÀ½´Ş±îÁö"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ë‹¤ìŒ ë‹¬ê¹Œì§€")||msg.getContentRaw().contains("ë‹¤ìŒë‹¬ê¹Œì§€"))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
     		
         	Command.nextMonth(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("ÀÏ±îÁö")||msg.getContentRaw().contains("ÀÏ ±îÁö"))&&(msg.getContentRaw().contains("¾ó¸¶")||msg.getContentRaw().contains("¸çÄ¥")||msg.getContentRaw().contains("¸îÀÏ"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ì¼ê¹Œì§€")||msg.getContentRaw().contains("ì¼ ê¹Œì§€"))&&(msg.getContentRaw().contains("ì–¼ë§ˆ")||msg.getContentRaw().contains("ë©°ì¹ ")||msg.getContentRaw().contains("ëª‡ì¼"))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
     		
 	        Command.untilDay(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("¼ö´É")&&(msg.getContentRaw().contains("¾ó¸¶")||msg.getContentRaw().contains("¾ğÁ¦")||msg.getContentRaw().contains("¸çÄ¥"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("ìˆ˜ëŠ¥")&&(msg.getContentRaw().contains("ì–¼ë§ˆ")||msg.getContentRaw().contains("ì–¸ì œ")||msg.getContentRaw().contains("ë©°ì¹ "))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
     		
 	        Command.untilDay(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("ÀÏÀº")&&(msg.getContentRaw().contains("¾ğÁ¦")||msg.getContentRaw().contains("¸çÄ¥")||msg.getContentRaw().contains("¸îÀÏ"))&&(msg.getContentRaw().contains("Àü")||msg.getContentRaw().contains("¾ú")||msg.getContentRaw().contains("¿´"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("ì¼ì€")&&(msg.getContentRaw().contains("ì–¸ì œ")||msg.getContentRaw().contains("ë©°ì¹ ")||msg.getContentRaw().contains("ëª‡ì¼"))&&(msg.getContentRaw().contains("ì „")||msg.getContentRaw().contains("ì—ˆ")||msg.getContentRaw().contains("ì˜€"))){
         	System.out.println("");
         	System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
     		
 	        Command.lastDay(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("Á¤º¸")){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("ì •ë³´")){
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	
@@ -936,31 +898,31 @@ public class BotMusicListener extends ListenerAdapter {
         	
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("ºĞ")&&(msg.getContentRaw().contains("ÈÄ")||msg.getContentRaw().contains("µÚ"))&&msg.getContentRaw().contains("¾Ë·Á")) {
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("ë¶„")&&(msg.getContentRaw().contains("í›„")||msg.getContentRaw().contains("ë’¤"))&&msg.getContentRaw().contains("ì•Œë ¤")) {
         	String min = msg.getContentRaw().replaceAll("[^0-9]", "");
 
         	Controller.timer(user, tc, msg, event, Integer.parseInt(min));
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("Å¸ÀÌ¸Ó")&&msg.getContentRaw().contains("ºĞ")&&(msg.getContentRaw().contains("¼³Á¤")||msg.getContentRaw().contains("¸ÂÃç")||msg.getContentRaw().contains("¼¼ÆÃ"))) {
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("íƒ€ì´ë¨¸")&&msg.getContentRaw().contains("ë¶„")&&(msg.getContentRaw().contains("ì„¤ì •")||msg.getContentRaw().contains("ë§ì¶°")||msg.getContentRaw().contains("ì„¸íŒ…"))) {
         	String min = msg.getContentRaw().replaceAll("[^0-9]", "");
         	
         	Controller.timer(user, tc, msg, event, Integer.parseInt(min));
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("Å¸ÀÌ¸Ó")&&msg.getContentRaw().contains("ºĞ")&&(msg.getContentRaw().contains("³²¾Ò")||msg.getContentRaw().contains("³²À½")||msg.getContentRaw().contains("µÚ¿¡"))) {
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("íƒ€ì´ë¨¸")&&msg.getContentRaw().contains("ë¶„")&&(msg.getContentRaw().contains("ë‚¨ì•˜")||msg.getContentRaw().contains("ë‚¨ìŒ")||msg.getContentRaw().contains("ë’¤ì—"))) {
         	
         	Controller.nowTimer(tc, msg, event);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&msg.getContentRaw().contains("Å¸ÀÌ¸Ó")&&(msg.getContentRaw().contains("¾ø¾Ö")||msg.getContentRaw().contains("Áö¿ö")||msg.getContentRaw().contains("»èÁ¦")||msg.getContentRaw().contains("Ãë¼Ò")||msg.getContentRaw().contains("Á¦°Å"))) {
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&msg.getContentRaw().contains("íƒ€ì´ë¨¸")&&(msg.getContentRaw().contains("ì—†ì• ")||msg.getContentRaw().contains("ì§€ì›Œ")||msg.getContentRaw().contains("ì‚­ì œ")||msg.getContentRaw().contains("ì·¨ì†Œ")||msg.getContentRaw().contains("ì œê±°"))) {
         	
         	Controller.timerCancel(tc, msg, event);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("¸î½Ã")||msg.getContentRaw().contains("¸îºĞ")||msg.getContentRaw().contains("¸îÃÊ")||msg.getContentRaw().contains("¸î ½Ã")||msg.getContentRaw().contains("¸î ºĞ")||msg.getContentRaw().contains("¸î ÃÊ"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ëª‡ì‹œ")||msg.getContentRaw().contains("ëª‡ë¶„")||msg.getContentRaw().contains("ëª‡ì´ˆ")||msg.getContentRaw().contains("ëª‡ ì‹œ")||msg.getContentRaw().contains("ëª‡ ë¶„")||msg.getContentRaw().contains("ëª‡ ì´ˆ"))){
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	
@@ -968,26 +930,26 @@ public class BotMusicListener extends ListenerAdapter {
         	
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("=")||msg.getContentRaw().contains("°è»ê"))){
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("=")||msg.getContentRaw().contains("ê³„ì‚°"))){
         	Calculate.calculate(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("»çÁø")||msg.getContentRaw().contains("ÇÁ·ÎÇÊ")||msg.getContentRaw().contains("ÇÁ»ç"))) {
+        else if(msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ì‚¬ì§„")||msg.getContentRaw().contains("í”„ë¡œí•„")||msg.getContentRaw().contains("í”„ì‚¬"))) {
         	String str = msg.getContentRaw().replaceAll("[^0-9]", "");
         	
         	EmbedBuilder eb = new EmbedBuilder();
         	eb.setColor(Color.decode(colorDefault));
-        	eb.setTitle("ºÒ·¯¿À´Â Áß...");
+        	eb.setTitle("ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...");
         	
         	
         	tc.sendMessage(eb.build()).queue(response -> {
         		try {
 	        		eb.setImage(event.getJDA().getUserById(str).getAvatarUrl() + "?size=2048");
-	            	eb.setTitle("'" + event.getJDA().getUserById(str).getName() + "' ÀÇ »çÁø", event.getJDA().getUserById(str).getAvatarUrl() + "?size=4096");
+	            	eb.setTitle("'" + event.getJDA().getUserById(str).getName() + "' ì˜ ì‚¬ì§„", event.getJDA().getUserById(str).getAvatarUrl() + "?size=4096");
         		}
             	
         		catch(Exception e) {
-        			eb.setTitle("°¡Á®¿ÀÁö ¸øÇß¾î¿ä" + func.cause(e));
+        			eb.setTitle("ê°€ì ¸ì˜¤ì§€ ëª»í–ˆì–´ìš”" + func.cause(e));
         		}
         		
         		response.editMessage(eb.build()).queue();
@@ -996,14 +958,14 @@ public class BotMusicListener extends ListenerAdapter {
         }
        
         
-        else if(user.toString().contains(admin) && (msg.getContentRaw().contains("±º¹ã")&&(msg.getContentRaw().contains("´©±¸")||msg.getContentRaw().contains("´©±º")||msg.getContentRaw().contains("¾Ë¾Æ")||msg.getContentRaw().contains("Ã£¾Æ")||msg.getContentRaw().contains("Á¶»ç")))){
-        	if(msg.getContentRaw().contains("¿¡¼­")) {
+        else if(user.toString().contains(admin) && (msg.getContentRaw().contains("êµ°ë°¤")&&(msg.getContentRaw().contains("ëˆ„êµ¬")||msg.getContentRaw().contains("ëˆ„êµ°")||msg.getContentRaw().contains("ì•Œì•„")||msg.getContentRaw().contains("ì°¾ì•„")||msg.getContentRaw().contains("ì¡°ì‚¬")))){
+        	if(msg.getContentRaw().contains("ì—ì„œ")) {
         		searchPeopleSelectGuild(tc, msg, event);
         	}
         	
         	else {
         		
-        		tc.sendMessage("Á¶»ç Áß...").queue(response -> {
+        		tc.sendMessage("ì¡°ì‚¬ ì¤‘...").queue(response -> {
         			searchPeople(tc, msg, response);
         		});
 
@@ -1011,9 +973,9 @@ public class BotMusicListener extends ListenerAdapter {
         	
         }
         
-        else if(msg.toString().contains("±º¹ã")&&msg.toString().contains("ÁÖ»çÀ§")) {
+        else if(msg.toString().contains("êµ°ë°¤")&&msg.toString().contains("ì£¼ì‚¬ìœ„")) {
         	Date date = new Date();
-        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
     		String str = dayTime.format(date);
     		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	
@@ -1052,11 +1014,11 @@ public class BotMusicListener extends ListenerAdapter {
         }
         
         
-        //¸í·É¾î ½ÃÀÛ
+        //ëª…ë ¹ì–´ ì‹œì‘
         if(msg.getContentRaw().startsWith("$!")||msg.getContentRaw().startsWith("$$")||msg.getContentRaw().startsWith("$n"))
         	return;
         
-        if(msg.getContentRaw().startsWith("¤Ó")||msg.getContentRaw().startsWith("$")) {}
+        if(msg.getContentRaw().startsWith("ã…£")||msg.getContentRaw().startsWith("$")) {}
         else {
         	return;
         }
@@ -1065,11 +1027,11 @@ public class BotMusicListener extends ListenerAdapter {
         if(isError == 1) {
         	if(user.toString().contains(admin)) {}
         	else {
-        		tc.sendMessage("Á¡°Ë ÁßÀ¸·Î Àá½Ã µÚ¿¡ ½ÃµµÇÏ¼¼¿ä").queue();
+        		tc.sendMessage("ì ê²€ ì¤‘ìœ¼ë¡œ ì ì‹œ ë’¤ì— ì‹œë„í•˜ì„¸ìš”").queue();
         	}
         }
 
-        if(msg.getContentRaw().charAt(0) == '¤Ó'||msg.getContentRaw().charAt(0) == '$'){
+        if(msg.getContentRaw().charAt(0) == 'ã…£'||msg.getContentRaw().charAt(0) == '$'){
         	if(tc.toString().contains("686949011705430062")) {return;}
 
         	String[] args;
@@ -1080,21 +1042,21 @@ public class BotMusicListener extends ListenerAdapter {
         	else args = msg.getContentRaw().substring(1).split(" ");
         	
         	
-        	if(tc.toString().contains("553254281495576577")||tc.toString().contains("652157102927773699")||tc.toString().contains("599181021681811459")||msg.getContentRaw().contains("¤Ó¤º")||msg.getContentRaw().contains("¤Óclear")||msg.getContentRaw().contains("$¤º")||msg.getContentRaw().contains("$clear")) {}
+        	if(tc.toString().contains("553254281495576577")||tc.toString().contains("652157102927773699")||tc.toString().contains("599181021681811459")||msg.getContentRaw().contains("ã…£ã…Š")||msg.getContentRaw().contains("ã…£clear")||msg.getContentRaw().contains("$ã…Š")||msg.getContentRaw().contains("$clear")) {}
         	else 
         		MusicController.alertTc(tc, event);
        	
-        	if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("guilds")||args[0].equalsIgnoreCase("g")||args[0].equalsIgnoreCase("¤¾"))){
+        	if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("guilds")||args[0].equalsIgnoreCase("g")||args[0].equalsIgnoreCase("ã…"))){
              	MusicController.guilds(tc, msg, event);
 
              }
         	 
         	if(user.toString().contains(admin)) {}
-        	else { //·Î±×Âï±â
+        	else { //ë¡œê·¸ì°ê¸°
 	        	System.out.println("");
 	        	System.out.println(guild1 + "\n" + user.toString() + ": " + msg.getContentRaw());        		
 	        	Date date = new Date();
-		        SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+		        SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
 		    	String str = dayTime.format(date);
 	            log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         		
@@ -1107,11 +1069,11 @@ public class BotMusicListener extends ListenerAdapter {
         	if(ready == 0) {
 	        	if(user.toString().contains(admin)) {}
 	        	else {
-	        		tc.sendMessage("ÁØºñ ¿Ï·áÇÏ´Â ÁßÀÌ¿¡¿ä").queue();
-	        		System.out.println("BOT: ÁØºñ ¿Ï·áÇÏ´Â ÁßÀÌ¿¡¿ä");
+	        		tc.sendMessage("ì¤€ë¹„ ì™„ë£Œí•˜ëŠ” ì¤‘ì´ì—ìš”").queue();
+	        		System.out.println("BOT: ì¤€ë¹„ ì™„ë£Œí•˜ëŠ” ì¤‘ì´ì—ìš”");
 	        		
 	        		Date date = new Date();
-		        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy³â MM¿ù ddÀÏ HH:mm:ss");
+		        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyyë…„ MMì›” ddì¼ HH:mm:ss");
 		    		String str = dayTime.format(date);
 	        		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
 	        		return;
@@ -1129,7 +1091,7 @@ public class BotMusicListener extends ListenerAdapter {
 	            List<Message> msgs = mh.retrievePast(2).complete();
 	            tc.deleteMessages(msgs).complete();
             	
-	            tc.sendMessage("```º¿ÀÌ ÀÏÁö ÁßÁöµË´Ï´Ù```").queue();
+	            tc.sendMessage("```ë´‡ì´ ì¼ì§€ ì¤‘ì§€ë©ë‹ˆë‹¤```").queue();
 	            */
             	String vc = "";
                 try{ 
@@ -1142,14 +1104,14 @@ public class BotMusicListener extends ListenerAdapter {
                     return;
                 }
                 general = event.getJDA().getTextChannelById(vc);
-            	System.out.println(general.getGuild().toString() + "ÀÇ " + general.toString() + "Ã¤³Î¿¡ º¸³À´Ï´Ù");
+            	System.out.println(general.getGuild().toString() + "ì˜ " + general.toString() + "ì±„ë„ì— ë³´ëƒ…ë‹ˆë‹¤");
             	administrator = 1;
             	
             	Administrator.admin(tc, msg, guild1, user, event);
  
             }
   
-            else if((user.toString().contains(admin)||user.toString().contains(chanha))&&(args[0].equalsIgnoreCase("myclear")||args[0].equalsIgnoreCase("mc")||args[0].equalsIgnoreCase("¤Ñ¤º"))){
+            else if((user.toString().contains(admin)||user.toString().contains(chanha))&&(args[0].equalsIgnoreCase("myclear")||args[0].equalsIgnoreCase("mc")||args[0].equalsIgnoreCase("ã…¡ã…Š"))){
             	
                 if(args.length != 2) {
                 	MessageHistory mh1 = new MessageHistory(tc);
@@ -1262,7 +1224,7 @@ public class BotMusicListener extends ListenerAdapter {
 		                }
 		                
 		                int coun = co;
-		                tc.sendMessage(co + " deleted of " + count + " `'" + msgs.get(co).getContentRaw() + "' ±îÁö`").queue(response -> {
+		                tc.sendMessage(co + " deleted of " + count + " `'" + msgs.get(co).getContentRaw() + "' ê¹Œì§€`").queue(response -> {
 	          
 	                		Runnable remove = () -> {
 	 		                	
@@ -1304,7 +1266,7 @@ public class BotMusicListener extends ListenerAdapter {
  
             }
             
-            else if((user.toString().contains(admin)||user.toString().contains(chanha))&&(args[0].equalsIgnoreCase("c")||args[0].equalsIgnoreCase("clear")||args[0].equalsIgnoreCase("¤º"))){
+            else if((user.toString().contains(admin)||user.toString().contains(chanha))&&(args[0].equalsIgnoreCase("c")||args[0].equalsIgnoreCase("clear")||args[0].equalsIgnoreCase("ã…Š"))){
             	
                 if(args.length != 2) {
                 	MessageHistory mh1 = new MessageHistory(tc);
@@ -1400,7 +1362,7 @@ public class BotMusicListener extends ListenerAdapter {
 		                }
 		                
 		                
-		                tc.sendMessage(co + " deleted `'" + msgs.get(co).getContentRaw() + "' ±îÁö`").queue(response -> {
+		                tc.sendMessage(co + " deleted `'" + msgs.get(co).getContentRaw() + "' ê¹Œì§€`").queue(response -> {
 	                		
 	                		Runnable remove = () -> {
 	 		                	
@@ -1446,14 +1408,14 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.lock(tc, event, 1);
             }
             
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("»óÈ²½Ç")){
-            	tc.sendMessage("ÀúÀå Áß...").queue(response -> {
+            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("ìƒí™©ì‹¤")){
+            	tc.sendMessage("ì €ì¥ ì¤‘...").queue(response -> {
             		MusicController.memoSave(tc, msg, event, response);
             	});
             	
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("¿Ï·á")||args[0].equalsIgnoreCase("complete"))){
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("ì™„ë£Œ")||args[0].equalsIgnoreCase("complete"))){
             	File file = new File(BotMusicListener.directoryDefault + "guild/guildListSave.txt");
             	int count = 0;
             	int coun = 0;
@@ -1505,12 +1467,12 @@ public class BotMusicListener extends ListenerAdapter {
                     	EmbedBuilder eb = new EmbedBuilder();
                     	
                     	eb.setColor(Color.decode(colorDefault));
-                    	eb.addField("¹öÀü", musicVersion, false);
-                    	eb.addField("³»¿ë", info, true);
-                    	eb.setAuthor("'ÀÚ¼¼ÇÑ ÆĞÄ¡³ëÆ® º¸±â'", "https://discord.gg/Qq4kuca", null);
+                    	eb.addField("ë²„ì „", musicVersion, false);
+                    	eb.addField("ë‚´ìš©", info, true);
+                    	eb.setAuthor("'ìì„¸í•œ íŒ¨ì¹˜ë…¸íŠ¸ ë³´ê¸°'", "https://discord.gg/Qq4kuca", null);
                     	
                     	MessageBuilder msgs = new MessageBuilder();
-                    	msgs.append("¾÷µ¥ÀÌÆ®°¡ ¿Ï·áµÇ¾ú¾î¿ä");
+                    	msgs.append("ì—…ë°ì´íŠ¸ê°€ ì™„ë£Œë˜ì—ˆì–´ìš”");
                     	msgs.setEmbed(eb.build());
                     	
                     	comp.sendMessage(msgs.build()).queue();
@@ -1527,7 +1489,7 @@ public class BotMusicListener extends ListenerAdapter {
                     logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
                 }
             	
-            	tc.sendMessage("**" + count + "°³** Ã¤³Î¿¡ ¾÷µ¥ÀÌÆ® ¿Ï·áÇß¾î¿ä").queue();
+            	tc.sendMessage("**" + count + "ê°œ** ì±„ë„ì— ì—…ë°ì´íŠ¸ ì™„ë£Œí–ˆì–´ìš”").queue();
             	coun = 0;
             }
             
@@ -1535,7 +1497,7 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.lock(tc,event, 0);
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("listen")||args[0].equalsIgnoreCase("µµÅ·"))) {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("listen")||args[0].equalsIgnoreCase("ë„í‚¹"))) {
             	
             	String vc = "";
                 try{ 
@@ -1546,18 +1508,18 @@ public class BotMusicListener extends ListenerAdapter {
                     return;
                 }
 
-              if(vc.contains("Ãë¼Ò")||vc.contains("²ô±â")||vc.contains("¸ØÃã")||vc.contains("±×¸¸")||vc.contains("³ª°¡±â")) {
-            	  tc.sendMessage("```µµÅ·À» ±×¸¸ÇØ¿ä```").queue();
+              if(vc.contains("ì·¨ì†Œ")||vc.contains("ë„ê¸°")||vc.contains("ë©ˆì¶¤")||vc.contains("ê·¸ë§Œ")||vc.contains("ë‚˜ê°€ê¸°")) {
+            	  tc.sendMessage("```ë„í‚¹ì„ ê·¸ë§Œí•´ìš”```").queue();
               	  listen = 0;
             	  return;
               }
                 	dokingStr = vc;
                 	listen = 1;
-                	tc.sendMessage("```" + vc + " µµÅ·À» ½ÃÀÛÇØ¿ä```").queue();
+                	tc.sendMessage("```" + vc + " ë„í‚¹ì„ ì‹œì‘í•´ìš”```").queue();
   
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("getTextChannel")||args[0].equalsIgnoreCase("Ã¤³Îº¸±â"))) {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("getTextChannel")||args[0].equalsIgnoreCase("ì±„ë„ë³´ê¸°"))) {
             	
             	String vc = "";
                 try{ 
@@ -1572,17 +1534,17 @@ public class BotMusicListener extends ListenerAdapter {
 	
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("stopListen")||args[0].equalsIgnoreCase("µµÅ·±×¸¸")||args[0].equalsIgnoreCase("µµÅ·¸ØÃã")||args[0].equalsIgnoreCase("µµÅ·³ª°¡±â")||args[0].equalsIgnoreCase("µµÅ·Ãë¼Ò")||args[0].equalsIgnoreCase("µµÅ·²ô±â"))) {
-            	tc.sendMessage("```µµÅ·À» ±×¸¸ÇØ¿ä```").queue();
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("stopListen")||args[0].equalsIgnoreCase("ë„í‚¹ê·¸ë§Œ")||args[0].equalsIgnoreCase("ë„í‚¹ë©ˆì¶¤")||args[0].equalsIgnoreCase("ë„í‚¹ë‚˜ê°€ê¸°")||args[0].equalsIgnoreCase("ë„í‚¹ì·¨ì†Œ")||args[0].equalsIgnoreCase("ë„í‚¹ë„ê¸°"))) {
+            	tc.sendMessage("```ë„í‚¹ì„ ê·¸ë§Œí•´ìš”```").queue();
             	listen = 0;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("¾Ë¸²")||args[0].equalsIgnoreCase("¾Ë¸®±â")||args[0].equalsIgnoreCase("allExitAlert")||args[0].equalsIgnoreCase("¸ğµÎ³ª°¡¸é¾Ë¸²"))) {
-            	tc.sendMessage("¸ğµç À½¼ºÃ¤³Î¿¡¼­ ±º¹ãÀÌ ³ª°¡¸é ¾Ë¸²À¸·Î ¾Ë·ÁÁà¿ä").queue();
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("ì•Œë¦¼")||args[0].equalsIgnoreCase("ì•Œë¦¬ê¸°")||args[0].equalsIgnoreCase("allExitAlert")||args[0].equalsIgnoreCase("ëª¨ë‘ë‚˜ê°€ë©´ì•Œë¦¼"))) {
+            	tc.sendMessage("ëª¨ë“  ìŒì„±ì±„ë„ì—ì„œ êµ°ë°¤ì´ ë‚˜ê°€ë©´ ì•Œë¦¼ìœ¼ë¡œ ì•Œë ¤ì¤˜ìš”").queue();
             	allExitAlert = 1;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("saveDefault")||args[0].equalsIgnoreCase("sd")||args[0].equalsIgnoreCase("¤¤¤·"))) {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("saveDefault")||args[0].equalsIgnoreCase("sd")||args[0].equalsIgnoreCase("ã„´ã…‡"))) {
             	
             	String vc = "";
                 try{ 
@@ -1595,28 +1557,28 @@ public class BotMusicListener extends ListenerAdapter {
 
                 if(func.isNumber(vc)) {
                 	if(Integer.parseInt(args[1]) == 1) {
-                		tc.sendMessage("```À½¼ºÃ¤³ÎÀ» ³ª°¥ ¶§ ¸ñ·ÏÀÌ ÀúÀåµË´Ï´Ù```").queue();
-                		System.out.println("BOT: ```À½¼ºÃ¤³ÎÀ» ³ª°¥ ¶§ ¸ñ·ÏÀÌ ÀúÀåµË´Ï´Ù```");
+                		tc.sendMessage("```ìŒì„±ì±„ë„ì„ ë‚˜ê°ˆ ë•Œ ëª©ë¡ì´ ì €ì¥ë©ë‹ˆë‹¤```").queue();
+                		System.out.println("BOT: ```ìŒì„±ì±„ë„ì„ ë‚˜ê°ˆ ë•Œ ëª©ë¡ì´ ì €ì¥ë©ë‹ˆë‹¤```");
                 		
                 		MusicController.save(tc, event, 1);
                 	}
                 	
                 	else {
-                		tc.sendMessage("```css\nÀ½¼ºÃ¤³ÎÀ» ³ª°¥ ¶§ [¸ñ·ÏÀ» ÀúÀåÇÏÁö ¾Ê½À´Ï´Ù]```").queue();
-                		System.out.println("BOT: ```css\nÀ½¼ºÃ¤³ÎÀ» ³ª°¥ ¶§ [¸ñ·ÏÀ» ÀúÀåÇÏÁö ¾Ê½À´Ï´Ù]```");	
+                		tc.sendMessage("```css\nìŒì„±ì±„ë„ì„ ë‚˜ê°ˆ ë•Œ [ëª©ë¡ì„ ì €ì¥í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤]```").queue();
+                		System.out.println("BOT: ```css\nìŒì„±ì±„ë„ì„ ë‚˜ê°ˆ ë•Œ [ëª©ë¡ì„ ì €ì¥í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤]```");	
                 		
                 		MusicController.save(tc, event, 0);
                 	}
                 }
                 else {
-                	tc.sendMessage("¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä").queue();
-                	System.out.println("BOT: ¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä");
+                	tc.sendMessage("ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”").queue();
+                	System.out.println("BOT: ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”");
  	
                 }
 	
             }
             
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("Á¡°Ë")) {
+            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("ì ê²€")) {
             	
             	String vc = "";
                 try{ 
@@ -1629,22 +1591,22 @@ public class BotMusicListener extends ListenerAdapter {
 
                 if(func.isNumber(vc)) {
                 	if(Integer.parseInt(args[1]) == 1) {
-                		tc.sendMessage("```Á¡°ËÀ» ½ÃÀÛÇÕ´Ï´Ù```").queue();
-                		System.out.println("BOT: ```Á¡°ËÀ» ½ÃÀÛÇÕ´Ï´Ù```");
+                		tc.sendMessage("```ì ê²€ì„ ì‹œì‘í•©ë‹ˆë‹¤```").queue();
+                		System.out.println("BOT: ```ì ê²€ì„ ì‹œì‘í•©ë‹ˆë‹¤```");
                 		
                 		isError = 1;
                 	}
                 	
                 	else {
-                		tc.sendMessage("```Á¡°ËÀ» ³¡³À´Ï´Ù```").queue();
-                		System.out.println("BOT: ```Á¡°ËÀ» ³¡³À´Ï´Ù```");	
+                		tc.sendMessage("```ì ê²€ì„ ëëƒ…ë‹ˆë‹¤```").queue();
+                		System.out.println("BOT: ```ì ê²€ì„ ëëƒ…ë‹ˆë‹¤```");	
                 		
                 		isError = 0;
                 	}
                 }
                 else {
-                	tc.sendMessage("¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä").queue();
-                	System.out.println("BOT: ¼ıÀÚ·Î ÀÔ·ÂÇØ ÁÖ¼¼¿ä");
+                	tc.sendMessage("ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”").queue();
+                	System.out.println("BOT: ìˆ«ìë¡œ ì…ë ¥í•´ ì£¼ì„¸ìš”");
  	
                 }
 	
@@ -1720,36 +1682,36 @@ public class BotMusicListener extends ListenerAdapter {
                     logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
                 }
             	
-            	tc.sendMessage("**" + coun + "°³** Ã¤³Î¿¡ °øÁöÇÕ´Ï´Ù").queue();
+            	tc.sendMessage("**" + coun + "ê°œ** ì±„ë„ì— ê³µì§€í•©ë‹ˆë‹¤").queue();
             	coun = 0;
             	count = 0;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("º¸¿Ï")||args[0].equalsIgnoreCase("¼öÁ¤")||args[0].equalsIgnoreCase("fix"))){
-            	tc.sendMessage("¼öÁ¤ Áß...").queue(response -> {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("ë³´ì™„")||args[0].equalsIgnoreCase("ìˆ˜ì •")||args[0].equalsIgnoreCase("fix"))){
+            	tc.sendMessage("ìˆ˜ì • ì¤‘...").queue(response -> {
             		MusicController.fixGuilds(tc, msg, event, response);
             	});
             	
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("clearLog")||args[0].equalsIgnoreCase("·Î±×Áö¿ì±â"))){
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("clearLog")||args[0].equalsIgnoreCase("ë¡œê·¸ì§€ìš°ê¸°"))){
             	clearLog(tc, event, msg);
-            	tc.sendMessage("·Î±×¸¦ Å¬¸®¾îÇß¾î¿ä").queue();
+            	tc.sendMessage("ë¡œê·¸ë¥¼ í´ë¦¬ì–´í–ˆì–´ìš”").queue();
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("·Î±×ÄÑ±â"))){
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("ë¡œê·¸ì¼œê¸°"))){
             	clearLog(tc, event, msg);
-            	tc.sendMessage("·Î±×¸¦ ÄÑ¿ä").queue();
+            	tc.sendMessage("ë¡œê·¸ë¥¼ ì¼œìš”").queue();
             	logOn = 1;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("·Î±×²ô±â"))){
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("ë¡œê·¸ë„ê¸°"))){
             	clearLog(tc, event, msg);
-            	tc.sendMessage("·Î±×¸¦ ²¨¿ä").queue();
+            	tc.sendMessage("ë¡œê·¸ë¥¼ êº¼ìš”").queue();
             	logOn = 0;
             }
         
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("saveGuilds")||args[0].equalsIgnoreCase("±æµåÀúÀå"))) {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("saveGuilds")||args[0].equalsIgnoreCase("ê¸¸ë“œì €ì¥"))) {
             	MusicController.saveGuilds(tc, event);
             }
             
@@ -1757,7 +1719,7 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.alert(tc, event);
             }
             
-            else if(args[0].equalsIgnoreCase("Ã¤³Î")||args[0].equalsIgnoreCase("channel")||args[0].equalsIgnoreCase("ch")||args[0].equalsIgnoreCase("CHANNEL")||args[0].equalsIgnoreCase("CH")){
+            else if(args[0].equalsIgnoreCase("ì±„ë„")||args[0].equalsIgnoreCase("channel")||args[0].equalsIgnoreCase("ch")||args[0].equalsIgnoreCase("CHANNEL")||args[0].equalsIgnoreCase("CH")){
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
 
@@ -1769,14 +1731,14 @@ public class BotMusicListener extends ListenerAdapter {
             	Controller.news(tc, msg, event);
             }
             
-            else if(args[0].equalsIgnoreCase("°æÁ¦")||args[0].equalsIgnoreCase("economy")||args[0].equalsIgnoreCase("ECONOMY")||args[0].equalsIgnoreCase("money")||args[0].equalsIgnoreCase("MONEY")||args[0].equalsIgnoreCase("µ·")||args[0].equalsIgnoreCase("ÄÚ½ºÇÇ")||args[0].equalsIgnoreCase("KOSPI")||args[0].equalsIgnoreCase("kospi")) {
+            else if(args[0].equalsIgnoreCase("ê²½ì œ")||args[0].equalsIgnoreCase("economy")||args[0].equalsIgnoreCase("ECONOMY")||args[0].equalsIgnoreCase("money")||args[0].equalsIgnoreCase("MONEY")||args[0].equalsIgnoreCase("ëˆ")||args[0].equalsIgnoreCase("ì½”ìŠ¤í”¼")||args[0].equalsIgnoreCase("KOSPI")||args[0].equalsIgnoreCase("kospi")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
             	Controller.kospi(tc, msg, event, language);
             }
             
-            else if(args[0].equalsIgnoreCase("Àç¼³Á¤")||args[0].equalsIgnoreCase("reset")||args[0].equalsIgnoreCase("RESET")||args[0].equalsIgnoreCase("r")||args[0].equalsIgnoreCase("R")) {
+            else if(args[0].equalsIgnoreCase("ì¬ì„¤ì •")||args[0].equalsIgnoreCase("reset")||args[0].equalsIgnoreCase("RESET")||args[0].equalsIgnoreCase("r")||args[0].equalsIgnoreCase("R")) {
             	
         		MusicController.reset(tc, msg, event);
         		Controller.reset(tc, msg, event);
@@ -1784,8 +1746,8 @@ public class BotMusicListener extends ListenerAdapter {
             
             else if(args[0].contains("print")||args[0].contains("guild")||args[0].equalsIgnoreCase("alert")||args[0].equalsIgnoreCase("clear")||args[0].contains("admin")||args[0].contains("logout")||args[0].contains("saveDefault")||args[0].contains("lock")) {
             	
-            	tc.sendMessage("°ü¸®ÀÚ¸¸ ÀÌ¿ë °¡´ÉÇÑ ¸í·É¾î¿¡¿ä").queue();
-            	System.out.println("BOT: °ü¸®ÀÚ¸¸ ÀÌ¿ë °¡´ÉÇÑ ¸í·É¾î¿¡¿ä");       	
+            	tc.sendMessage("ê´€ë¦¬ìë§Œ ì´ìš© ê°€ëŠ¥í•œ ëª…ë ¹ì–´ì—ìš”").queue();
+            	System.out.println("BOT: ê´€ë¦¬ìë§Œ ì´ìš© ê°€ëŠ¥í•œ ëª…ë ¹ì–´ì—ìš”");       	
             }
             
             // user
@@ -1804,7 +1766,7 @@ public class BotMusicListener extends ListenerAdapter {
 		        MusicController.repeat(tc, msg, event);    	
             }
             
-            else if(args[0].equalsIgnoreCase("add")||args[0].equalsIgnoreCase("p")||args[0].equalsIgnoreCase("play")||args[0].equalsIgnoreCase("Á¦»ı")||args[0].equalsIgnoreCase("Àç»ı")||args[0].equalsIgnoreCase("¤Ä")||args[0].equalsIgnoreCase("Ãß°¡")) {
+            else if(args[0].equalsIgnoreCase("add")||args[0].equalsIgnoreCase("p")||args[0].equalsIgnoreCase("play")||args[0].equalsIgnoreCase("ì œìƒ")||args[0].equalsIgnoreCase("ì¬ìƒ")||args[0].equalsIgnoreCase("ã…”")||args[0].equalsIgnoreCase("ì¶”ê°€")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1829,7 +1791,7 @@ public class BotMusicListener extends ListenerAdapter {
                 }       	
             }
             
-            else if(args[0].equalsIgnoreCase("randomplay")||args[0].equalsIgnoreCase("ranp")||args[0].equalsIgnoreCase("·£´ıÁ¦»ı")||args[0].equalsIgnoreCase("·£´ıÀç»ı")||args[0].equalsIgnoreCase("·£Àç")||args[0].equalsIgnoreCase("playrandom")||args[0].equalsIgnoreCase("pran")||args[0].equalsIgnoreCase("Á¦»ı·£´ı")||args[0].equalsIgnoreCase("Àç»ı·£´ı")||args[0].equalsIgnoreCase("Àç·£")) {
+            else if(args[0].equalsIgnoreCase("randomplay")||args[0].equalsIgnoreCase("ranp")||args[0].equalsIgnoreCase("ëœë¤ì œìƒ")||args[0].equalsIgnoreCase("ëœë¤ì¬ìƒ")||args[0].equalsIgnoreCase("ëœì¬")||args[0].equalsIgnoreCase("playrandom")||args[0].equalsIgnoreCase("pran")||args[0].equalsIgnoreCase("ì œìƒëœë¤")||args[0].equalsIgnoreCase("ì¬ìƒëœë¤")||args[0].equalsIgnoreCase("ì¬ëœ")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1854,7 +1816,7 @@ public class BotMusicListener extends ListenerAdapter {
                     }
                     	
                     else {
-                    	String langu = "**Àç»ı¸ñ·Ï URL**ÀÌ ¾Æ´Ñ °Í °°¾Æ¿ä";
+                    	String langu = "**ì¬ìƒëª©ë¡ URL**ì´ ì•„ë‹Œ ê²ƒ ê°™ì•„ìš”";
                     	if(language.equals("eng"))
                     		langu = "I don't think that URL links to a playlist.";
                     			
@@ -1866,7 +1828,7 @@ public class BotMusicListener extends ListenerAdapter {
                    
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("ÁÖ¼Ò")||args[0].equalsIgnoreCase("ÁÖ¼Ò¹Ş±â")||args[0].equalsIgnoreCase("ÁÖ¼ÒÁ¤º¸"))) {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("ì£¼ì†Œ")||args[0].equalsIgnoreCase("ì£¼ì†Œë°›ê¸°")||args[0].equalsIgnoreCase("ì£¼ì†Œì •ë³´"))) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1876,19 +1838,19 @@ public class BotMusicListener extends ListenerAdapter {
             	try {
             		InetAddress inet = InetAddress.getLocalHost();
             		StringBuilder s = new StringBuilder();
-            		s.append("·ÎÄÃÈ£½ºÆ®: " + inet);
+            		s.append("ë¡œì»¬í˜¸ìŠ¤íŠ¸: " + inet);
             		
             		tc.sendMessage(s).queue();
             	}
             	
             	catch(Exception e) {
             		e.printStackTrace();
-					tc.sendMessage("¿À·ù°¡ ¹ß»ıÇß¾î¿ä\n**" + ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+					tc.sendMessage("ì˜¤ë¥˜ê°€ ë°œìƒí–ˆì–´ìš”\n**" + ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
             	}
 
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("test")||args[0].equalsIgnoreCase("Å×½ºÆ®"))) {
+            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("test")||args[0].equalsIgnoreCase("í…ŒìŠ¤íŠ¸"))) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1900,10 +1862,10 @@ public class BotMusicListener extends ListenerAdapter {
             	AudioSourceManagers.registerRemoteSources(myManager);
             	VoiceChannel myChannel = member.getVoiceState().getChannel();
             	if(myChannel == null) {
-            		tc.sendMessage("¸ÕÀú À½¼ºÃ¤³Î¿¡ µé¾î°¡¼¼¿ä").queue();
-            		System.out.println("BOT: ¸ÕÀú À½¼ºÃ¤³Î¿¡ µé¾î°¡¼¼¿ä");
+            		tc.sendMessage("ë¨¼ì € ìŒì„±ì±„ë„ì— ë“¤ì–´ê°€ì„¸ìš”").queue();
+            		System.out.println("BOT: ë¨¼ì € ìŒì„±ì±„ë„ì— ë“¤ì–´ê°€ì„¸ìš”");
             		
-	        		log(tc, event, msg, "BOT: ¸ÕÀú À½¼ºÃ¤³Î¿¡ µé¾î°¡¼¼¿ä");
+	        		log(tc, event, msg, "BOT: ë¨¼ì € ìŒì„±ì±„ë„ì— ë“¤ì–´ê°€ì„¸ìš”");
 	       
             		return;
             	}
@@ -1916,7 +1878,7 @@ public class BotMusicListener extends ListenerAdapter {
             }
             		
             
-            else if(args[0].equalsIgnoreCase("°Ë»ö")||args[0].equalsIgnoreCase("search")) {
+            else if(args[0].equalsIgnoreCase("ê²€ìƒ‰")||args[0].equalsIgnoreCase("search")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1939,7 +1901,7 @@ public class BotMusicListener extends ListenerAdapter {
             		EmbedBuilder eb = new EmbedBuilder();
         			eb.setColor(Color.decode(colorDefault));
         				
-        			String langu = ":mag: `" + query.substring(queryCount) + "` °Ë»ö Áß...";
+        			String langu = ":mag: `" + query.substring(queryCount) + "` ê²€ìƒ‰ ì¤‘...";
                 	if(language.equals("eng"))
                 		langu = ":mag: Searching `" + query.substring(queryCount) + "`...";
                 		
@@ -1956,7 +1918,7 @@ public class BotMusicListener extends ListenerAdapter {
                     	
             }
   
-            else if(args[0].equalsIgnoreCase("¤Ä¤Ä")||args[0].equalsIgnoreCase("ÀÏ½ÃÁ¤Áö")||args[0].equalsIgnoreCase("Á¤Áö")||args[0].equalsIgnoreCase("pause")||args[0].equalsIgnoreCase("pp")) {
+            else if(args[0].equalsIgnoreCase("ã…”ã…”")||args[0].equalsIgnoreCase("ì¼ì‹œì •ì§€")||args[0].equalsIgnoreCase("ì •ì§€")||args[0].equalsIgnoreCase("pause")||args[0].equalsIgnoreCase("pp")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1971,7 +1933,7 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.pause(tc, event, member, language, 1);
             }
             
-            else if(args[0].equalsIgnoreCase("ÀÌµ¿")||args[0].equalsIgnoreCase("¿Å±â±â")||args[0].equalsIgnoreCase("move")||args[0].equalsIgnoreCase("mv")) {
+            else if(args[0].equalsIgnoreCase("ì´ë™")||args[0].equalsIgnoreCase("ì˜®ê¸°ê¸°")||args[0].equalsIgnoreCase("move")||args[0].equalsIgnoreCase("mv")) {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
@@ -1980,7 +1942,7 @@ public class BotMusicListener extends ListenerAdapter {
 
             	if(args.length <= 1||input.length() != 18) {
             		
-            		String langu = "¿Ã¹Ù¸¥ id¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä";
+            		String langu = "ì˜¬ë°”ë¥¸ idë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”";
             		if(language.equals("eng"))
             			langu = "Please input a valid id.";
             		
@@ -2000,7 +1962,7 @@ public class BotMusicListener extends ListenerAdapter {
         			String inChannel = member.getVoiceState().getChannel().getName();
         			
 	        		if(myChannel.getName().contentEquals(inChannel)) {
-	        			String langu = "ÀÌ¹Ì **" + myChannel.getName() + "** ¿¡ ÀÖ¾î¿ä (" + (int)(myChannel.getMembers().size()-1) + "¸í)";
+	        			String langu = "ì´ë¯¸ **" + myChannel.getName() + "** ì— ìˆì–´ìš” (" + (int)(myChannel.getMembers().size()-1) + "ëª…)";
 	            		if(language.equals("eng"))
 	            			langu = "Already joined **" + myChannel.getName() + "**. (" + (int)(myChannel.getMembers().size()-1) + "people)";
 	            		
@@ -2012,7 +1974,7 @@ public class BotMusicListener extends ListenerAdapter {
 	        			guild.getAudioManager().openAudioConnection(myChannel);
 	    
 	        		    
-	        			String langu = "**" + myChannel.getName() + "** ·Î ÀÌµ¿Çß¾î¿ä  (" + (int)(myChannel.getMembers().size()) + "¸í)";
+	        			String langu = "**" + myChannel.getName() + "** ë¡œ ì´ë™í–ˆì–´ìš”  (" + (int)(myChannel.getMembers().size()) + "ëª…)";
 	            		if(language.equals("eng"))
 	            			langu = "Joined to **" + myChannel.getName() + "**.  (" + (int)(myChannel.getMembers().size()) + "people)";
 	            		
@@ -2028,7 +1990,7 @@ public class BotMusicListener extends ListenerAdapter {
         		}
             }
   
-            else if(args[0].equalsIgnoreCase("cpu")||args[0].equalsIgnoreCase("»ç¿ë·®")||args[0].equalsIgnoreCase("spec")||args[0].equalsIgnoreCase("½ºÆå")||args[0].equalsIgnoreCase("»ç¾ç")||args[0].equalsIgnoreCase("¼º´É")||args[0].equalsIgnoreCase("ÄÄÇ»ÅÍ")) {
+            else if(args[0].equalsIgnoreCase("cpu")||args[0].equalsIgnoreCase("ì‚¬ìš©ëŸ‰")||args[0].equalsIgnoreCase("spec")||args[0].equalsIgnoreCase("ìŠ¤í™")||args[0].equalsIgnoreCase("ì‚¬ì–‘")||args[0].equalsIgnoreCase("ì„±ëŠ¥")||args[0].equalsIgnoreCase("ì»´í“¨í„°")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
@@ -2036,7 +1998,7 @@ public class BotMusicListener extends ListenerAdapter {
 
             }
        
-            else if(args[0].equalsIgnoreCase("¸®½ºÆ®")||args[0].equalsIgnoreCase("Àç»ı¸ñ·Ï")||args[0].equalsIgnoreCase("¸ñ·Ï")||args[0].equalsIgnoreCase("¤²")||args[0].equalsIgnoreCase("Å¥")||args[0].equalsIgnoreCase("q")||args[0].equalsIgnoreCase("queue")||args[0].equalsIgnoreCase("list")||args[0].equalsIgnoreCase("playlist")) {
+            else if(args[0].equalsIgnoreCase("ë¦¬ìŠ¤íŠ¸")||args[0].equalsIgnoreCase("ì¬ìƒëª©ë¡")||args[0].equalsIgnoreCase("ëª©ë¡")||args[0].equalsIgnoreCase("ã…‚")||args[0].equalsIgnoreCase("í")||args[0].equalsIgnoreCase("q")||args[0].equalsIgnoreCase("queue")||args[0].equalsIgnoreCase("list")||args[0].equalsIgnoreCase("playlist")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2060,7 +2022,7 @@ public class BotMusicListener extends ListenerAdapter {
  	
             }
             
-            else if(args[0].equalsIgnoreCase("³Ñ±â±â")||args[0].equalsIgnoreCase("½ºÅµ")||args[0].equalsIgnoreCase("°Ç³Ê¶Ù±â")||args[0].equalsIgnoreCase("¤¤")||args[0].equalsIgnoreCase("skip")||args[0].equalsIgnoreCase("s")||args[0].equalsIgnoreCase("jump")) {
+            else if(args[0].equalsIgnoreCase("ë„˜ê¸°ê¸°")||args[0].equalsIgnoreCase("ìŠ¤í‚µ")||args[0].equalsIgnoreCase("ê±´ë„ˆë›°ê¸°")||args[0].equalsIgnoreCase("ã„´")||args[0].equalsIgnoreCase("skip")||args[0].equalsIgnoreCase("s")||args[0].equalsIgnoreCase("jump")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2079,7 +2041,7 @@ public class BotMusicListener extends ListenerAdapter {
             	
             }
             
-            else if(args[0].equalsIgnoreCase("Àç°Å")||args[0].equalsIgnoreCase("Á¦°Å")||args[0].equalsIgnoreCase("»èÁ¦")||args[0].equalsIgnoreCase("remove")) {
+            else if(args[0].equalsIgnoreCase("ì¬ê±°")||args[0].equalsIgnoreCase("ì œê±°")||args[0].equalsIgnoreCase("ì‚­ì œ")||args[0].equalsIgnoreCase("remove")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2090,7 +2052,7 @@ public class BotMusicListener extends ListenerAdapter {
             	if(getType(args[0]) == true) language = "eng";
             	
             	if(args.length <= 1) {
-            		String langu = "»èÁ¦ÇÒ Ç×¸ñ ¹øÈ£°¡ ÀÖ¾î¾ßÇØ¿ä";
+            		String langu = "ì‚­ì œí•  í•­ëª© ë²ˆí˜¸ê°€ ìˆì–´ì•¼í•´ìš”";
             		if(language.equals("eng")) langu = "Must have item number.";
             		
             		tc.sendMessage(langu).queue();
@@ -2177,7 +2139,7 @@ public class BotMusicListener extends ListenerAdapter {
             				MusicController.removeTrack(args[1], tc, event, 0, language, 0);
             			else {
             				
-            				String langu = "¹øÈ£¸¸ ÀÔ·ÂÇÏ¼¼¿ä";
+            				String langu = "ë²ˆí˜¸ë§Œ ì…ë ¥í•˜ì„¸ìš”";
                     		if(language.equals("eng")) langu = "Please input number only.";
                     		
             				tc.sendMessage(langu).queue();
@@ -2187,7 +2149,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             }
             
-            else if(args[0].equalsIgnoreCase("´Ù½ÃÀç»ı")||args[0].equalsIgnoreCase("playagain")) {
+            else if(args[0].equalsIgnoreCase("ë‹¤ì‹œì¬ìƒ")||args[0].equalsIgnoreCase("playagain")) {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
@@ -2203,7 +2165,7 @@ public class BotMusicListener extends ListenerAdapter {
 	            	
 	            	VoiceChannel myChannel = member.getVoiceState().getChannel();
 	            	if(myChannel == null) {
-	            		String langu = "¸ÕÀú À½¼ºÃ¤³Î¿¡ µé¾î°¡¼¼¿ä";
+	            		String langu = "ë¨¼ì € ìŒì„±ì±„ë„ì— ë“¤ì–´ê°€ì„¸ìš”";
                 		if(language.equals("eng")) langu = "Join the voice channel first.";
                 		
 	            		tc.sendMessage(langu).queue();
@@ -2218,7 +2180,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	else {
-            		String langu = "¿©±â¼­´Â ¾µ ¼ö ¾ø´Â ±â´ÉÀÌ¿¡¿ä";
+            		String langu = "ì—¬ê¸°ì„œëŠ” ì“¸ ìˆ˜ ì—†ëŠ” ê¸°ëŠ¥ì´ì—ìš”";
             		if(language.equals("eng")) langu = "Can't use it in this server.";
             		
             		tc.sendMessage(langu).queue();
@@ -2228,7 +2190,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             }
             
-            else if(args[0].equalsIgnoreCase("ºÒ·¯¿À±â")||args[0].equalsIgnoreCase("load")) {
+            else if(args[0].equalsIgnoreCase("ë¶ˆëŸ¬ì˜¤ê¸°")||args[0].equalsIgnoreCase("load")) {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
@@ -2244,7 +2206,7 @@ public class BotMusicListener extends ListenerAdapter {
 	
 	            	VoiceChannel myChannel = member.getVoiceState().getChannel();
 	            	if(myChannel == null) {
-	            		String langu = "¸ÕÀú À½¼ºÃ¤³Î¿¡ µé¾î°¡¼¼¿ä";
+	            		String langu = "ë¨¼ì € ìŒì„±ì±„ë„ì— ë“¤ì–´ê°€ì„¸ìš”";
                 		if(language.equals("eng")) langu = "Join the voice channel first.";
                 		
 	            		tc.sendMessage(langu).queue();
@@ -2273,7 +2235,7 @@ public class BotMusicListener extends ListenerAdapter {
 	            		}
 	            		
 	            		else {
-	            			String langu = "¿Ã¹Ù¸¥ ID¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä";
+	            			String langu = "ì˜¬ë°”ë¥¸ IDë¥¼ ì…ë ¥í•´ ì£¼ì„¸ìš”";
                     		if(language.equals("eng")) langu = "Please input a valid id.";
                     		
             				tc.sendMessage(langu).queue();
@@ -2289,7 +2251,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	else {
-            		String langu = "¿©±â¼­´Â ¾µ ¼ö ¾ø´Â ±â´ÉÀÌ¿¡¿ä";
+            		String langu = "ì—¬ê¸°ì„œëŠ” ì“¸ ìˆ˜ ì—†ëŠ” ê¸°ëŠ¥ì´ì—ìš”";
             		if(language.equals("eng")) langu = "Can't use it in this server.";
             		
             		tc.sendMessage(langu).queue();
@@ -2299,7 +2261,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             }
 
-            else if(args[0].equalsIgnoreCase("Æ²¾î")||args[0].equalsIgnoreCase("Àç°³")||args[0].equalsIgnoreCase("resume")) {
+            else if(args[0].equalsIgnoreCase("í‹€ì–´")||args[0].equalsIgnoreCase("ì¬ê°œ")||args[0].equalsIgnoreCase("resume")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2313,7 +2275,7 @@ public class BotMusicListener extends ListenerAdapter {
             	
             	MusicController.resume(tc, event, member, language, 1);}
             
-            else if(args[0].equalsIgnoreCase("Á¾·á")||args[0].equalsIgnoreCase("¸¶Áö¸·")||args[0].equalsIgnoreCase("last")) {
+            else if(args[0].equalsIgnoreCase("ì¢…ë£Œ")||args[0].equalsIgnoreCase("ë§ˆì§€ë§‰")||args[0].equalsIgnoreCase("last")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2332,11 +2294,11 @@ public class BotMusicListener extends ListenerAdapter {
             		last = -1;
             	}
             	
-            	else if(args[1].equals("0")||input.contains("Ãë¼Ò")||input.contains("Á¦°Å")||input.contains("cancel")||input.contains("remove")||input.contains("disable")) {
+            	else if(args[1].equals("0")||input.contains("ì·¨ì†Œ")||input.contains("ì œê±°")||input.contains("cancel")||input.contains("remove")||input.contains("disable")) {
             		isLast = 0;
             	}
             	
-            	else if(input.contains("¸ñ·Ï")||input.contains("Å¥")||input.contains("Àç»ı¸ñ·Ï")||input.contains("q")||input.contains("¤²")||input.contains("queue")||input.contains("list")||input.contains("playlist")) {
+            	else if(input.contains("ëª©ë¡")||input.contains("í")||input.contains("ì¬ìƒëª©ë¡")||input.contains("q")||input.contains("ã…‚")||input.contains("queue")||input.contains("list")||input.contains("playlist")) {
             		isLast = 1;
             		last = -2;
             	}
@@ -2355,7 +2317,7 @@ public class BotMusicListener extends ListenerAdapter {
             	
             }
             
-            else if(args[0].equalsIgnoreCase("·£´ã")||args[0].equalsIgnoreCase("·»´ı")||args[0].equalsIgnoreCase("·£´ı")||args[0].equalsIgnoreCase("¼ÅÇÃ")||args[0].equalsIgnoreCase("shuffle")||args[0].equalsIgnoreCase("random")) {
+            else if(args[0].equalsIgnoreCase("ëœë‹´")||args[0].equalsIgnoreCase("ë Œë¤")||args[0].equalsIgnoreCase("ëœë¤")||args[0].equalsIgnoreCase("ì…”í”Œ")||args[0].equalsIgnoreCase("shuffle")||args[0].equalsIgnoreCase("random")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2368,7 +2330,7 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.shuffle(tc, msg, event, language);
             }
             
-            else if(args[0].equalsIgnoreCase("ÇöÀç")||args[0].equalsIgnoreCase("Áö±İ")||args[0].equalsIgnoreCase("now")||args[0].equalsIgnoreCase("nowplay")||args[0].equalsIgnoreCase("np")||args[0].equalsIgnoreCase("nowplaying")) {
+            else if(args[0].equalsIgnoreCase("í˜„ì¬")||args[0].equalsIgnoreCase("ì§€ê¸ˆ")||args[0].equalsIgnoreCase("now")||args[0].equalsIgnoreCase("nowplay")||args[0].equalsIgnoreCase("np")||args[0].equalsIgnoreCase("nowplaying")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2382,38 +2344,38 @@ public class BotMusicListener extends ListenerAdapter {
    
             }
             
-            else if(args[0].equalsIgnoreCase("help")||args[0].equalsIgnoreCase("guide") || msg.getContentRaw().equalsIgnoreCase("»ç¿ë¹ı") || msg.getContentRaw().equalsIgnoreCase("¼³¸í¼­") || args[0].equalsIgnoreCase("µµ¿ò¸»")) {
+            else if(args[0].equalsIgnoreCase("help")||args[0].equalsIgnoreCase("guide") || msg.getContentRaw().equalsIgnoreCase("ì‚¬ìš©ë²•") || msg.getContentRaw().equalsIgnoreCase("ì„¤ëª…ì„œ") || args[0].equalsIgnoreCase("ë„ì›€ë§")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
             	Controller.help(tc, msg, event, language);
             }
             
-            else if(args[0].equalsIgnoreCase("ÈÄ¿ø")||args[0].equalsIgnoreCase("donate")) {
+            else if(args[0].equalsIgnoreCase("í›„ì›")||args[0].equalsIgnoreCase("donate")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	String langu = "±º¹ãÀÌ¿¡°Ô ¹äÀ» ÁÖ¼¼¿ä\n**ÆäÀÌÆÈ·Î ÈÄ¿øÇÏ±â:** https://www.paypal.me/gunbam";
+            	String langu = "êµ°ë°¤ì´ì—ê²Œ ë°¥ì„ ì£¼ì„¸ìš”\n**í˜ì´íŒ”ë¡œ í›„ì›í•˜ê¸°:** https://www.paypal.me/gunbam";
             	if(language.equals("eng")) langu = "**Donate with paypal: **https://www.paypal.me/gunbam**";
             	
             	tc.sendMessage(langu).queue();
             	logtc.sendMessage("<@297963786504110083>").queue();
             }
             
-            else if(args[0].contains("info")||args[0].equalsIgnoreCase("Á¤º¸")) {
+            else if(args[0].contains("info")||args[0].equalsIgnoreCase("ì •ë³´")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
             	Controller.showInfo(tc, msg, event, language);
             }
             
-            else if(args[0].equalsIgnoreCase("time")||args[0].equalsIgnoreCase("½Ã°£")) {
+            else if(args[0].equalsIgnoreCase("time")||args[0].equalsIgnoreCase("ì‹œê°„")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
             	showTime(tc, user, msg, language);}
         
-            else if(args[0].equalsIgnoreCase("ÀÚµ¿²ô±â")||args[0].equalsIgnoreCase("Å¸ÀÌ¸Ó")||args[0].equalsIgnoreCase("timer")||args[0].equalsIgnoreCase("autooff")) {
+            else if(args[0].equalsIgnoreCase("ìë™ë„ê¸°")||args[0].equalsIgnoreCase("íƒ€ì´ë¨¸")||args[0].equalsIgnoreCase("timer")||args[0].equalsIgnoreCase("autooff")) {
             	
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
@@ -2430,14 +2392,14 @@ public class BotMusicListener extends ListenerAdapter {
                     return;
                 }
                 
-                if(input.contains("Ãë¼Ò")||input.contains("²ô±â")||input.contains("Á¦°Å")||input.contains("ÇØÁ¦")||input.contains("off")||input.contains("cancel")||input.contains("remove")||input.contains("disable")) {
+                if(input.contains("ì·¨ì†Œ")||input.contains("ë„ê¸°")||input.contains("ì œê±°")||input.contains("í•´ì œ")||input.contains("off")||input.contains("cancel")||input.contains("remove")||input.contains("disable")) {
                 	MusicController.timerCancel(tc, msg,  event, language);
                 	return;
                 }
                 
                 if(func.isNumber(input)) {
                 	if(Integer.parseInt(input) <= 0) {
-                		String langu = "½Ã°£Àº ÃÖ¼Ò 1ºĞ ÀÌ»óÀÌ¾î¾ß ÇØ¿ä";
+                		String langu = "ì‹œê°„ì€ ìµœì†Œ 1ë¶„ ì´ìƒì´ì–´ì•¼ í•´ìš”";
                 		if(language.equals("eng")) 
                 			langu = "Time must over 1 minute.";
                 		
@@ -2453,7 +2415,7 @@ public class BotMusicListener extends ListenerAdapter {
                 	}
                 }
                 else {
-                	String langu = "¿Ã¹Ù¸£°Ô ÀÔ·ÂÇØ ÁÖ¼¼¿ä";
+                	String langu = "ì˜¬ë°”ë¥´ê²Œ ì…ë ¥í•´ ì£¼ì„¸ìš”";
             		if(language.equals("eng")) 
             			langu = "Please input correctly.";
             		
@@ -2465,7 +2427,7 @@ public class BotMusicListener extends ListenerAdapter {
             	
             }
             
-            else if(args[0].equalsIgnoreCase("¼Ò¸®")||args[0].equalsIgnoreCase("À½·®")||args[0].equalsIgnoreCase("º¼·ı")||args[0].equalsIgnoreCase("sound")||args[0].equalsIgnoreCase("vol")||args[0].equalsIgnoreCase("volume")) {
+            else if(args[0].equalsIgnoreCase("ì†Œë¦¬")||args[0].equalsIgnoreCase("ìŒëŸ‰")||args[0].equalsIgnoreCase("ë³¼ë¥¨")||args[0].equalsIgnoreCase("sound")||args[0].equalsIgnoreCase("vol")||args[0].equalsIgnoreCase("volume")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2485,7 +2447,7 @@ public class BotMusicListener extends ListenerAdapter {
                 }
                 
                 if(!func.isNumber(vc)) {
-                	String langu = "¿Ã¹Ù¸£°Ô ÀÔ·ÂÇØ ÁÖ¼¼¿ä";
+                	String langu = "ì˜¬ë°”ë¥´ê²Œ ì…ë ¥í•´ ì£¼ì„¸ìš”";
                 	if(language.equals("eng"))
                 		langu = "Please input correctly.";
                 	tc.sendMessage(langu).queue();
@@ -2497,7 +2459,7 @@ public class BotMusicListener extends ListenerAdapter {
                 }
                 
                 if(Integer.parseInt(args[1])<0 || Integer.parseInt(args[1])>100) {
-                	String langu = "1~100Áß¿¡¼­ ÀÔ·ÂÇÏ¼¼¿ä";
+                	String langu = "1~100ì¤‘ì—ì„œ ì…ë ¥í•˜ì„¸ìš”";
                 	if(language.equals("eng"))
                 		langu = "Please input between 1 and 100.";
                 	
@@ -2512,7 +2474,7 @@ public class BotMusicListener extends ListenerAdapter {
             	
             }
             
-            else if(args[0].equalsIgnoreCase("¤¤¤¤")||args[0].equalsIgnoreCase("Ãë¼Ò")||args[0].equalsIgnoreCase("cancel")||args[0].equalsIgnoreCase("return")) {
+            else if(args[0].equalsIgnoreCase("ã„´ã„´")||args[0].equalsIgnoreCase("ì·¨ì†Œ")||args[0].equalsIgnoreCase("cancel")||args[0].equalsIgnoreCase("return")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2525,7 +2487,7 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.cancel(tc, msg, event, language);
             }
             
-            else if(args[0].equalsIgnoreCase("ÀúÀå¸ñ·Ï")||args[0].equalsIgnoreCase("ÀúÀåµÈ¸ñ·Ï")||args[0].equalsIgnoreCase("savedlist")||args[0].equalsIgnoreCase("savelist")) {
+            else if(args[0].equalsIgnoreCase("ì €ì¥ëª©ë¡")||args[0].equalsIgnoreCase("ì €ì¥ëœëª©ë¡")||args[0].equalsIgnoreCase("savedlist")||args[0].equalsIgnoreCase("savelist")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
@@ -2542,7 +2504,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	else {
-            		String langu = "¿©±â¼­´Â ¾µ ¼ö ¾ø´Â ±â´ÉÀÌ¿¡¿ä";
+            		String langu = "ì—¬ê¸°ì„œëŠ” ì“¸ ìˆ˜ ì—†ëŠ” ê¸°ëŠ¥ì´ì—ìš”";
             		if(language.equals("eng")) langu = "Can't use it in this server.";
             		
             		tc.sendMessage(langu).queue();
@@ -2553,7 +2515,7 @@ public class BotMusicListener extends ListenerAdapter {
            
             }
             
-            else if(args[0].equalsIgnoreCase("ÀúÀå")||args[0].equalsIgnoreCase("save")) {
+            else if(args[0].equalsIgnoreCase("ì €ì¥")||args[0].equalsIgnoreCase("save")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
@@ -2564,7 +2526,7 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	else {
-            		String langu = "¿©±â¼­´Â ¾µ ¼ö ¾ø´Â ±â´ÉÀÌ¿¡¿ä";
+            		String langu = "ì—¬ê¸°ì„œëŠ” ì“¸ ìˆ˜ ì—†ëŠ” ê¸°ëŠ¥ì´ì—ìš”";
             		if(language.equals("eng")) langu = "Can't use it in this server.";
             		
             		tc.sendMessage(langu).queue();
@@ -2575,7 +2537,7 @@ public class BotMusicListener extends ListenerAdapter {
            
             }
             
-            else if(args[0].equalsIgnoreCase("¸ØÃã")||args[0].equalsIgnoreCase("ÁßÁö")||args[0].equalsIgnoreCase("³ª°¡°Ô")||args[0].equalsIgnoreCase("³«°¡¤Ó")||args[0].equalsIgnoreCase("³ª°¢±â")||args[0].equalsIgnoreCase("³ª°¡¤Ó")||args[0].equalsIgnoreCase("³ª°¡±â")||args[0].equalsIgnoreCase("exit")||args[0].equalsIgnoreCase("out")||args[0].equalsIgnoreCase("stop")||args[0].equalsIgnoreCase("leave")||args[0].equalsIgnoreCase("disconnect")||args[0].equalsIgnoreCase("dc")){
+            else if(args[0].equalsIgnoreCase("ë©ˆì¶¤")||args[0].equalsIgnoreCase("ì¤‘ì§€")||args[0].equalsIgnoreCase("ë‚˜ê°€ê²Œ")||args[0].equalsIgnoreCase("ë‚™ê°€ã…£")||args[0].equalsIgnoreCase("ë‚˜ê°ê¸°")||args[0].equalsIgnoreCase("ë‚˜ê°€ã…£")||args[0].equalsIgnoreCase("ë‚˜ê°€ê¸°")||args[0].equalsIgnoreCase("exit")||args[0].equalsIgnoreCase("out")||args[0].equalsIgnoreCase("stop")||args[0].equalsIgnoreCase("leave")||args[0].equalsIgnoreCase("disconnect")||args[0].equalsIgnoreCase("dc")){
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2614,7 +2576,7 @@ public class BotMusicListener extends ListenerAdapter {
  
             }
             
-            else if(args[0].equalsIgnoreCase("ÇÎ")||args[0].equalsIgnoreCase("ping")||args[0].equalsIgnoreCase("PING")||args[0].equalsIgnoreCase("PONG")||args[0].equalsIgnoreCase("pong")||args[0].equalsIgnoreCase("Áö¿¬½Ã°£")||args[0].equalsIgnoreCase("³×Æ®¿öÅ©")||args[0].equalsIgnoreCase("latency")||args[0].equalsIgnoreCase("network")||args[0].equalsIgnoreCase("NETWORK")||args[0].equalsIgnoreCase("LATENCY")) {
+            else if(args[0].equalsIgnoreCase("í•‘")||args[0].equalsIgnoreCase("ping")||args[0].equalsIgnoreCase("PING")||args[0].equalsIgnoreCase("PONG")||args[0].equalsIgnoreCase("pong")||args[0].equalsIgnoreCase("ì§€ì—°ì‹œê°„")||args[0].equalsIgnoreCase("ë„¤íŠ¸ì›Œí¬")||args[0].equalsIgnoreCase("latency")||args[0].equalsIgnoreCase("network")||args[0].equalsIgnoreCase("NETWORK")||args[0].equalsIgnoreCase("LATENCY")) {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
@@ -2622,7 +2584,7 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.ping(guild1, tc, msg, event, language);
             }
             
-            else if(args[0].equalsIgnoreCase("¾÷")||args[0].equalsIgnoreCase("¤Å¤µ")||args[0].equalsIgnoreCase("¾÷Å¸ÀÓ")||args[0].equalsIgnoreCase("uptime")||args[0].equalsIgnoreCase("up")) {
+            else if(args[0].equalsIgnoreCase("ì—…")||args[0].equalsIgnoreCase("ã…•ã……")||args[0].equalsIgnoreCase("ì—…íƒ€ì„")||args[0].equalsIgnoreCase("uptime")||args[0].equalsIgnoreCase("up")) {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
@@ -2638,10 +2600,10 @@ public class BotMusicListener extends ListenerAdapter {
     }
 
 	public void showTime(TextChannel tc, User user, Message msg, String lan) {
-		SimpleDateFormat time = new SimpleDateFormat("HH½Ã mmºĞ ssÃÊ");
+		SimpleDateFormat time = new SimpleDateFormat("HHì‹œ mmë¶„ ssì´ˆ");
 		String timeStr = time.format (System.currentTimeMillis());
 		
-		String language = "ÇöÀç **" + timeStr + "** ¿¡¿ä";
+		String language = "í˜„ì¬ **" + timeStr + "** ì—ìš”";
 		if(lan.equals("eng")) {
 			language = timeStr + " now. (South Korea)";
 		}
@@ -2649,14 +2611,14 @@ public class BotMusicListener extends ListenerAdapter {
 		
 		System.out.println("");
 		System.out.println(user.toString() + ": " + msg.getContentRaw());
-    	System.out.println("BOT: ÇöÀç **" + timeStr + "** ¿¡¿ä");
+    	System.out.println("BOT: í˜„ì¬ **" + timeStr + "** ì—ìš”");
   
 	}
 	
 	public void searchPeopleSelectGuild(TextChannel tc, Message msg, MessageReceivedEvent event) {
 		String str1 = msg.getContentRaw().replaceAll(" ", "");
-		String split1 = str1.split("¿¡¼­")[0];
-		String split2 = str1.split("¿¡¼­")[1];
+		String split1 = str1.split("ì—ì„œ")[0];
+		String split2 = str1.split("ì—ì„œ")[1];
 
 		String atGuild = split1.replaceAll("[^0-9]", "");
 		String object = split2.replaceAll("[^0-9]", "");
@@ -2688,27 +2650,27 @@ public class BotMusicListener extends ListenerAdapter {
     	}
     	
     	if(who.equals("nullgunbam")) {
-    		tc.sendMessage("´©±ºÁö ¸ø Ã£¾Ò¾î¿ä").queue();
+    		tc.sendMessage("ëˆ„êµ°ì§€ ëª» ì°¾ì•˜ì–´ìš”").queue();
     	}
     	
     	else {
     		String strs = "";
     		if(nickName.equals("nullgunbam")) {
-    			strs = "`" + who + "` ÀÌ³×¿ä";
+    			strs = "`" + who + "` ì´ë„¤ìš”";
     		}
     		else {
-    			strs = "`" + nickName + "` ÀÌ°í ÀÌ¸§Àº `" + who + "` ÀÌ¿¡¿ä";
+    			strs = "`" + nickName + "` ì´ê³  ì´ë¦„ì€ `" + who + "` ì´ì—ìš”";
     		}
     		
     		StringBuilder s = new StringBuilder();
-    		s.append("Á÷¾÷Àº **");
+    		s.append("ì§ì—…ì€ **");
     		
     		if(roles.isEmpty()) {
-    			s.append("¾ø¾î¿ä**");
+    			s.append("ì—†ì–´ìš”**");
     		}
     		else {
 	    		for(int i = 0; i<roles.size(); i++) {
-	    			if(i == roles.size() -1) s.append(roles.get(i).toString() + "** ÀÌ¿¡¿ä");
+	    			if(i == roles.size() -1) s.append(roles.get(i).toString() + "** ì´ì—ìš”");
 	    			else s.append(roles.get(i).toString() + ", ");
 	    		}
     		}
@@ -2733,7 +2695,7 @@ public class BotMusicListener extends ListenerAdapter {
 	    	listedGuild.clear();
 	    	listedGuild.addAll(tc.getJDA().getGuilds());
 	    	
-	    	end: //ÁßµµÅ»Ãâ ÇÒ ÀÌ¸§ ¼³Á¤
+	    	end: //ì¤‘ë„íƒˆì¶œ í•  ì´ë¦„ ì„¤ì •
 	    	for(int g = 0; g<listedGuild.size(); g++) {
 		    	listed.clear();
 		    	listed.addAll(listedGuild.get(g).getMembers());
@@ -2747,7 +2709,7 @@ public class BotMusicListener extends ListenerAdapter {
 		    			for(int ig = 0; ig<inGuilds.size(); ig++) {
 		    				where.append("  " + inGuilds.get(ig) + "\n");
 		    				
-		    				//¸¸¾à user Á¶»ç°¡ ¸¶ÃÆÀ¸¸é °­Á¦·Î for¹® Á¾·á
+		    				//ë§Œì•½ user ì¡°ì‚¬ê°€ ë§ˆì³¤ìœ¼ë©´ ê°•ì œë¡œ forë¬¸ ì¢…ë£Œ
 		    				if(ig == inGuilds.size() - 1) {
 		    					
 		    					break end;
@@ -2758,13 +2720,13 @@ public class BotMusicListener extends ListenerAdapter {
 	    	}
 	    	
 	    	if(who == null) {
-	    		response.editMessage("´©±ºÁö ¸ø Ã£¾Ò¾î¿ä").queue();
+	    		response.editMessage("ëˆ„êµ°ì§€ ëª» ì°¾ì•˜ì–´ìš”").queue();
 	    	}
 	    	
 	    	else {
 	    		long endTime = System.currentTimeMillis();
 	    		try {
-	    			response.editMessage("`" + who + "` ÀÌ³×¿ä\n```¼ÓÇØ ÀÖ´Â ¼­¹ö ¸ñ·Ï\n\n" + where + "\n" + (long)(endTime - startTime) + "ms```").queue();
+	    			response.editMessage("`" + who + "` ì´ë„¤ìš”\n```ì†í•´ ìˆëŠ” ì„œë²„ ëª©ë¡\n\n" + where + "\n" + (long)(endTime - startTime) + "ms```").queue();
 	    		}
 	    		catch(Exception e) {
 	    			response.editMessage(":no_entry_sign: **" + e.getMessage() + func.cause(e)).queue();
