@@ -15,8 +15,8 @@ public class Administrator extends BotMusicListener {
 	public static void admin(TextChannel tc, Message msg, Guild guild, User user, MessageReceivedEvent event) {
 
 		
-	Scanner scanner = new Scanner(System.in);
-	    String str = scanner.nextLine();
+		Scanner scanner = new Scanner(System.in);
+	   	String str = scanner.nextLine();
 	    tc = general;
     	
 	    if(str.equalsIgnoreCase("/logout")) {
