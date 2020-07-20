@@ -23,7 +23,7 @@ public class Main {
 	
 	public static JDA jda;
 	public static String num = "1";
-	public static String because = "º¹±¸";
+	public static String because = "ë³µêµ¬";
 	
 	public static String apiToken = "";
 	
@@ -34,15 +34,15 @@ public class Main {
 
 		String token = "";
 		if(num.equals("1"))
-        	token = ""; //±º¹ã
+        	token = ""; //êµ°ë°¤
         else if(num.equals("2"))
-        	token = ""; //ºĞ½Å±º¹ã
+        	token = ""; //ë¶„ì‹ êµ°ë°¤
 		
 		JDABuilder jb = new JDABuilder(token);
         jb.setAutoReconnect(true);
         jb.setStatus(OnlineStatus.ONLINE);
         jb.setAudioSendFactory(new NativeAudioSendFactory());
-        jb.setActivity(Activity.watching("±º¹ã »ç¿ë¹ı | ¹öÀü: 2020³â 7¿ù"));
+        jb.setActivity(Activity.watching("êµ°ë°¤ ì‚¬ìš©ë²• | ë²„ì „: 2020ë…„ 7ì›”"));
  
         jb.addEventListeners(new BotListener());
         jb.addEventListeners(new BotMusicListener());
@@ -83,16 +83,17 @@ public class Main {
         api.setStats(serverCount);
         
         TimerTask task = new TimerTask() {
-        	@Override
-        	public void run() {
-        		Runnable r = () -> {
-	        		api.setStats(serverCount);
-	        		System.out.println("top.gg " + serverCount + " servers ·Î ¼öÁ¤µÊ");
-        		};
-        		Thread t = new Thread(r);
-        		t.start();
-        	}
-        };
+		@Override
+	    	public void run() {
+	        	Runnable r = () -> {
+	        		int updateCount = jda.getGuilds().size(); 
+		        	api.setStats(updateCount);
+		        	System.out.println("top.gg " + serverCount + " servers ë¡œ ìˆ˜ì •ë¨");
+	        	};
+	        	Thread t = new Thread(r);
+	        	t.start();
+	    	}
+	};
         
         discordBotListUpdateTimer.scheduleAtFixedRate(task, 86400000, 86400000); // 1day
         
