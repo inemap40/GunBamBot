@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -42,6 +43,12 @@ public class BotListener extends ListenerAdapter {
         Guild guild = event.getGuild();
         Message msg = event.getMessage();
 
+        if(!event.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_WRITE)) {
+        	return;
+        }
+        
+        if(msg.getContentRaw().contains("가위바위보")) return;
+        
         checkAllow = 0;
         proced = 0;
         if(user.isBot()) return;
@@ -630,12 +637,8 @@ public class BotListener extends ListenerAdapter {
 		        
 		        }
 		        
-		        else if(msg.getContentRaw().contains("군밤사용법")){
-			        
-		        }
-		
 		        else if(msg.getContentRaw().contains("군밤")){
-		        	if(msg.getContentRaw().contains("="))return;
+		        	if(msg.getContentRaw().contains("=") || msg.getContentRaw().contains("사용법") || msg.getContentRaw().contains("도움말") || msg.getContentRaw().contains("설명서"))return;
 		        	System.out.println("");
 		        	System.out.println(guild + "\n" + user.toString() + ": " + msg.getContentRaw());
 		        	

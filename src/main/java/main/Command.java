@@ -72,8 +72,43 @@ public class Command extends BotListener{
     	int recogint = 0;
     	
     	if(msg.getContentRaw().contains("수능")) {
-    
-			calculateLeftDay(tc, date, 11, 19, 0);	  
+    		SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+    		int datey = Integer.parseInt(sdf.format(date));
+    		
+    		//월
+    		SimpleDateFormat sdf2 = new SimpleDateFormat("MM");
+    		int datem = Integer.parseInt(sdf2.format(date));
+    		
+    		//일
+    		SimpleDateFormat sdf3 = new SimpleDateFormat("dd");
+    		int dated = Integer.parseInt(sdf3.format(date));
+    		
+    		int inputM = 0;
+    		int inputD = 0;
+    		int inputY = datey;
+    		
+    		if(inputY == 2020) {
+    			inputM = 12;
+    			inputD = 3;
+    			
+    			if(datem >= inputM && dated >= inputD) {
+    				inputY = inputY + 1;
+    			}
+    		}
+    		if(inputY == 2021) {
+    			inputM = 11;
+    			inputD = 18;
+    			
+    			if(datem >= inputM && dated >= inputD) {
+    				inputY = inputY + 1;
+    			}
+    		}
+    		if(inputY == 2022) {
+    			inputM = 11;
+    			inputD = 17;
+    		}
+    		
+			calculateLeftDay(tc, date, inputM, inputD, inputY, false);	  
 		 }
     	
     	
@@ -97,7 +132,7 @@ public class Command extends BotListener{
 					    	day = (recogint - year*10000) % 100;
 					    } // 10일 된 후의 월 분리
 					    
-					    calculateLeftDay(tc, date, mon, day, year);
+					    calculateLeftDay(tc, date, mon, day, year, true);
 				    }
 				    
 				    else {
@@ -121,7 +156,7 @@ public class Command extends BotListener{
 					    	day = recogint%100;
 					    } // 10일 된 후의 월 분리
 					    
-					    calculateLeftDay(tc, date, mon, day, 0);
+					    calculateLeftDay(tc, date, mon, day, 0, false);
 				    }
 				    
 				    else {
@@ -151,7 +186,7 @@ public class Command extends BotListener{
 					    	day = (recogint - year*1000) % 100;
 					    } // 10일 된 후의 월 분리
 					    
-					    calculateLeftDay(tc, date, mon, day, year);
+					    calculateLeftDay(tc, date, mon, day, year, true);
 				    }
 				    
 				    else {
@@ -175,7 +210,7 @@ public class Command extends BotListener{
 				    	day = recogint%100;
 				    } // 10일 된 후의 월 분리
 				    
-				    calculateLeftDay(tc, date, mon, day, 0);
+				    calculateLeftDay(tc, date, mon, day, 0, false);
 			    }
 			    
 			    else {
@@ -570,7 +605,7 @@ public class Command extends BotListener{
 		
 	}
 	
-	public static void calculateLeftDay(TextChannel tc, Date date, int mon, int day, int yearInt) {
+	public static void calculateLeftDay(TextChannel tc, Date date, int mon, int day, int yearInt, boolean sayYear) {
 		
 		boolean run = true;
 		
@@ -596,11 +631,14 @@ public class Command extends BotListener{
 		SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy");
 		int year = Integer.parseInt(sdf3.format(date));
 		int datey = Integer.parseInt(sdf3.format(date));
-
-	
+		
+		if((yearInt != 0 && yearInt < year) || (yearInt != 0 && yearInt <= year && mon < datem) || (yearInt != 0 && yearInt <= year && mon <= datem && day < dated)) {
+			tc.sendMessage("말이 안돼요").queue();
+			return;
+		}
+		
 		int moncount = 0;
-			
-		if(datem == 1 ) {moncount = 31;}
+		if(datem == 1) {moncount = 31;}
 		else if(datem == 2 ) {
 			if(datey%4 == 0) {moncount = 29;}
 			else {moncount = 28;}
@@ -615,34 +653,17 @@ public class Command extends BotListener{
 		else if(datem == 10) {moncount = 31;}
 		else if(datem == 11) {moncount = 30;}
 		else if(datem == 12) {moncount = 31;}
-			
-		int monInt = mon;
-		int dayInt = day;
-		int yearCount = 0;
+
+		if(yearInt == 0)
+			yearInt = datey;
 		
-		int dayResult = dayInt - dated;
+		if((mon <= datem && day <= dated) || mon < datem) {
+			yearInt = yearInt + 1;
+		}
+
 		int result = 0;
 		
-		if(dayInt <= dated) {
-			if(datem == monInt) {
-				year = year + 1;
-			}
-		}
-		
-		if(yearInt > 0) {
-			yearCount = yearInt - year;
-
-		}
-		
-		if(yearCount < 0) {
-			tc.sendMessage("말이 안돼요").queue();
-			System.out.println("BOT: 말이 안돼요");
-	
-			return;
-		}
-
 		while(run) {
-				
 			if(datem == 1 ) {moncount = 31;}
 			else if(datem == 2 ) {
 				if(datey%4 == 0) {moncount = 29;}
@@ -658,73 +679,39 @@ public class Command extends BotListener{
 			else if(datem == 10) {moncount = 31;}
 			else if(datem == 11) {moncount = 30;}
 			else if(datem == 12) {moncount = 31;}
-				
-			if(datem > 12) {
-				datey = datey + 1;
-				datem = datem - 12;
-			}
-
-	
-			if(datey == year && datem >= monInt) {	
-				run = false;
-				break;
-			}
-
-			else {
-				result = result + moncount;
-				datem = datem + 1;
-			}
-		}
-		result = result + dayResult;
-		
-		
-
-		
-		for(int i=0; i<yearCount; i++) {
-				
-			for(int j=0; j<12; j++) {
-				if(datem > 12) {
-					datey = datey + 1;
-					datem = datem - 12;
-				}
-	
-				if(datem == 1 ) {moncount = 31;}
-				else if(datem == 2 ) {
-					if(datey%4 == 0) {moncount = 29;}
-					else {moncount = 28;}
-				}
-				else if(datem == 3) {moncount = 31;}
-				else if(datem == 4) {moncount = 30;}
-				else if(datem == 5) {moncount = 31;}
-				else if(datem == 6) {moncount = 30;}
-				else if(datem == 7) {moncount = 31;}
-				else if(datem == 8) {moncount = 31;}
-				else if(datem == 9) {moncount = 30;}
-				else if(datem == 10) {moncount = 31;}
-				else if(datem == 11) {moncount = 30;}
-				else if(datem == 12) {moncount = 31;}
-						
-				result = result + moncount;
+			
+			dated = dated + 1;
+			
+			if(dated > moncount) {
+				dated = dated - moncount;
 				datem = datem + 1;
 			}
 			
+			if(datem > 12) {
+				datem = datem - 12;
+				datey = datey + 1;
+			}
+			
+			result = result + 1;
+			
+			if(datey == yearInt && datem == mon && dated == day) {
+				run = false;
+				break;
+			}
 		}
 		
-		datey = Integer.parseInt(sdf3.format(date));
-	
 		String y;
-		if(year == datey) {y = "";}
-		else {y = String.valueOf(year) + "년 ";}
+		if(year == yearInt) {y = "";}
+		else {y = String.valueOf(datey) + "년 ";}
 		
-		if(yearInt > 0) {
-			tc.sendMessage("**" + yearInt + "년 " + mon + "월 " + day + "일까지 " + result + "일** 남았어요").queue();
-			System.out.println("BOT: **" + yearInt + "년 " + mon + "월 " + day + "일까지 " + result + "일** 남았어요");
-
+		String send = "**" + y + mon + "월 " + day + "일까지 " + result + "일** 남았어요";
+		if(sayYear) {
+			send = "**" + yearInt + "년 " + mon + "월 " + day + "일까지 " + result + "일** 남았어요";
 		}
-		else {
-			tc.sendMessage("**" + y + mon + "월 " + day + "일까지 " + result + "일** 남았어요").queue();
-			System.out.println("BOT: **" + y + mon + "월 " + day + "일까지 " + result + "일** 남았어요");
-		}
+		
+		tc.sendMessage(send).queue();
+		System.out.println("BOT: " + send);
+		
 	}
 	
 	public static void calculateLastDay(TextChannel tc, Date date, int mon, int day, int yearInt) {
@@ -756,28 +743,12 @@ public class Command extends BotListener{
 		int startDay = day;
 		int startMonth = mon;
 		int startYear = yearInt;
+
+		if(startYear == 0)
+			startYear = nowYear;
 		
 		int dayCount = 0;
 
-		/*
-		if(datem == 1 ) {moncount = 31;}
-		else if(datem == 2 ) {
-			if(year%4 == 0) {moncount = 29;}
-			else {moncount = 28;}
-		}
-		else if(datem == 3) {moncount = 31;}
-		else if(datem == 4) {moncount = 30;}
-		else if(datem == 5) {moncount = 31;}
-		else if(datem == 6) {moncount = 30;}
-		else if(datem == 7) {moncount = 31;}
-		else if(datem == 8) {moncount = 31;}
-		else if(datem == 9) {moncount = 30;}
-		else if(datem == 10) {moncount = 31;}
-		else if(datem == 11) {moncount = 30;}
-		else if(datem == 12) {moncount = 31;}
-		
-		*/
-		
 		
 		if(nowYear <= startYear) {
 			if(nowMonth <= startMonth) {
@@ -802,6 +773,7 @@ public class Command extends BotListener{
 		int moncount = 0;
 		
 		while(run) {
+
 			if(startYear == nowYear && startMonth == nowMonth && startDay == nowDay) {
 				run = false;
 				break;
@@ -810,10 +782,11 @@ public class Command extends BotListener{
 			dayCount = dayCount + 1;
 			startDay = startDay + 1;
 			
-			if(startMonth == 1 ) {moncount = 31;}
-			else if(startMonth == 2 ) {
+			
+			if(startMonth == 1) {moncount = 31;}
+			else if(startMonth == 2) {
 				if(startYear%4 == 0) {moncount = 29;}
-				else {startMonth = 28;}
+				else {moncount = 28;}
 			}
 			else if(startMonth == 3) {moncount = 31;}
 			else if(startMonth == 4) {moncount = 30;}

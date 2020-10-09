@@ -1,10 +1,7 @@
 package main;
 
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
@@ -18,9 +15,6 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -35,18 +29,18 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
-import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfMuteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceStreamEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.managers.AudioManager;
 import normal.Controller;
+import play.PlayController;
 import audio.MusicController;
 import functions.*;
 
@@ -54,23 +48,13 @@ import functions.*;
 public class BotMusicListener extends ListenerAdapter {
 	
 	public static String chatVersion = "2020년 6월";
-	public static String musicVersion = "2020년 7월";
-	public static String musicVersionEng = "2020.07";
+	public static String musicVersion = "2020년 9월";
+	public static String musicVersionEng = "2020.09";
 	
 	CustomFunctions func = new CustomFunctions();
 
-	int page = 0;
-	int send = 0;
-	String saveUser = "", saveGuild = "";
-
-	static int administrator = 0;
-	
 	public static int ret = 0;
 	
-	String recentId = "";
-	static TextChannel general;
-	
-	int fn = 0;
 	public static TextChannel adtc, logtc, listentc, dokingtc, voiceTc, jdatc, errortc;
 
 	public static int logOn = 1;
@@ -78,30 +62,27 @@ public class BotMusicListener extends ListenerAdapter {
 	public static int allExitAlert = 0;
 	public static User user = null;
 	
-	public static String admin = "297963786504110083", chanha = "447003774125342730", bot = "";
+	public static String admin = "297963786504110083", bot = "";
 	
 	public static String colorDefault = "#dddddd"; //dddddd, fff8dc
 	public static String colorSetTimer = "#222222";
 	
 	public static String directoryDefault = "files/";
-	public static String base = "661044497198743640", baseVoice = "705715643063861321", born = "533443336678146078";
+	public static String base = "661044497198743640", baseVoice = "705715643063861321"; // born = "533443336678146078";
 	public static int queryCount = 9;
 	public static HashMap<Guild, String> voiceTcMessage = new HashMap<Guild, String>();
-	public static List<Member> members = new ArrayList<>();
 	
 	public static String prefix = "";
-	String dokingStr = "686949011705430062";
+	public static String dokingStr = "686949011705430062";
 
-	int last = 0;
-	
 	int isError = 0;
-	public static int disconnect = 0;
-	public static Message deleted, inputClear;
+	
+	public static int disconnectedCode = 0;
+	public static DisconnectEvent disconnectedReasonEvent;
+
+	public static Message deleted, inputClear, updateResponse;
 	
 	public static long gunbamStartTime = 0;
-	
-	//private static final AudioPlayerManager myManager = new DefaultAudioPlayerManager();
-
 	
 	public static StringBuilder voiceStats(StringBuilder s, List<Member> members) {
 		
@@ -111,20 +92,15 @@ public class BotMusicListener extends ListenerAdapter {
 		 else {
 			 for(int i=0; i<members.size(); i++) {
 				 StringBuilder now = new StringBuilder();
+				if(members.get(i).getUser().isBot()) now.append(" [BOT]");
 		 		if(members.get(i).getVoiceState().isDeafened() == true) now.append(" Deaf");
 		 		if(members.get(i).getVoiceState().isStream() == true) now.append(" Stream");
 		 			
 			 	if(members.get(i).getNickname() == null) {
-			 		if(members.get(i).getUser().isBot()) s.append("U:" + members.get(i).getUser().getName() + "(" + members.get(i).getId() + ") [BOT]\n");
-			 		else {
-			 			s.append("U:" + members.get(i).getUser().getName() + "(" + members.get(i).getId() + ")" + now + "\n");
-			 		}
+			 		s.append("U:" + members.get(i).getUser().getName() + "(" + members.get(i).getId() + ")" + now + "\n");	
 			 	}
 			 	else {
-			 		if(members.get(i).getUser().isBot()) s.append("MB:" + members.get(i).getNickname() + "(" + members.get(i).getId() + ") [BOT]\n");
-			 		else {
-			 			s.append("MB:" + members.get(i).getNickname() + "(" + members.get(i).getId() + ")" + now + "\n");
-			 		}
+			 		s.append("MB:" + members.get(i).getNickname() + "(" + members.get(i).getId() + ")" + now + "\n");	
 			 	}
 			 }
 		 }
@@ -138,61 +114,62 @@ public class BotMusicListener extends ListenerAdapter {
         TextChannel t = event.getJDA().getGuildById(base).getTextChannelById("679204476808069120");
         voiceTc = event.getJDA().getGuildById(base).getTextChannelById(baseVoice);
         logtc = event.getJDA().getTextChannelById("686517298470846495");
-        	
-        gunbamStartTime = System.currentTimeMillis();
-        	
-        Runnable remove1 = () -> {
-	        try {
-		        MessageHistory mh1 = new MessageHistory(t);
-		        List<Message> mh11 = mh1.retrievePast(7).complete();
-
-		        try {
-		        	t.deleteMessages(mh11).complete();
-		        }
-		        catch(Exception e) {
-		        	for(int i = 0; i<7; i++) {
-		        		try {
-		        			mh11.get(i).delete().complete();
-		        		}
-		        		catch(Exception f) {}
-			        }
-		        }
-	
-		        //t.deleteMessages(mh1.retrievePast(7).complete()).complete();
-	        }
-	        catch(Exception e) {
-	        	try {
-	        			
-		    		MessageHistory mh1 = new MessageHistory(t);
-		    		List<Message> mh11 = mh1.retrievePast(3).complete();
-	        			
-			        mh11.get(0).delete().complete();
-			            
-	        	}
-	        	catch(Exception f) {}
-	        }
-	        	
-	        t.sendMessage("군밤이 가동을 시작했어요").queue();
-			System.out.println("BOT: 군밤이 가동을 시작헀어요");
-        };
-        	
+       
         if(Main.num.equals("1")) {
-	        Runnable remove2 = () -> {
-		        File file = new File(BotMusicListener.directoryDefault + "guild/removeVoiceStateMessages.txt");
-		        int remove = 0;
-		        	
-		    	try {
-		    		FileReader filereader = new FileReader(file);
-		    	       
-		    	    BufferedReader bufReader = new BufferedReader(filereader);
-		    	    String line = "";
-		    	        
-		    	    while((line = bufReader.readLine()) != null){
-		    	        remove = Integer.parseInt(line);
-		    	    }
-		    	               
-		    	    bufReader.close();
-		    	}
+        	
+		    Runnable remove1 = () -> {
+			    try {
+				    MessageHistory mh1 = new MessageHistory(t);
+				    List<Message> mh11 = mh1.retrievePast(9).complete();
+		
+				    try {
+				    	t.deleteMessages(mh11).complete();
+				    }
+				    catch(Exception e) {
+				    	for(int i = 0; i<mh11.size(); i++) {
+				        	try {
+				        		mh11.get(i).delete().complete();
+				        	}
+				        	catch(Exception f) {}
+				    	}
+				    }
+			
+				    //t.deleteMessages(mh1.retrievePast(7).complete()).complete();
+			    }
+			    catch(Exception e) {
+			    	try {
+			        			
+				    	MessageHistory mh1 = new MessageHistory(t);
+				    	List<Message> mh11 = mh1.retrievePast(3).complete();
+			        			
+					    mh11.get(0).delete().complete();
+					            
+			        }
+			        catch(Exception f) {}
+			    }
+			        	
+			   
+		    };
+		    Thread t1 = new Thread(remove1);
+		    t1.start();
+        
+        	
+		    Runnable remove2 = () -> {
+			    File file = new File(BotMusicListener.directoryDefault + "guild/removeVoiceStateMessages.txt");
+			    int remove = 0;
+			        	
+			    try {
+			    	FileReader filereader = new FileReader(file);
+			    	       
+			    	BufferedReader bufReader = new BufferedReader(filereader);
+			    	String line = "";
+			    	        
+			    	while((line = bufReader.readLine()) != null){
+			    	    remove = Integer.parseInt(line);
+			    	}
+			    	               
+			    	bufReader.close();
+			    }
 		    	catch(Exception e) {
 		    		t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
 		    	}
@@ -231,98 +208,186 @@ public class BotMusicListener extends ListenerAdapter {
 	
 	        };
 	        Thread t2 = new Thread(remove2);
-	        t2.start();
-	        	
-	        Runnable send = () -> {
-				File file = new File(BotMusicListener.directoryDefault + "guild/usingGuilds.txt");
-					
-				try{   
-			        FileReader filereader = new FileReader(file);
-			        BufferedReader bufReader  =  new BufferedReader(filereader);
-		
-			        String line = "";
-			        while((line = bufReader.readLine()) != null){
-			            try {
-				            event.getJDA().getTextChannelById(line.split("/")[1]).sendMessage(":mega: 봇이 " + Main.because + " 되었어요").queue();
-				            logtc.sendMessage(":mega: `(" + event.getJDA().getGuildById(line.split("/")[0]).getName() + ")` 봇이 " + Main.because + " 되었어요").queue();
-			            }
-			            catch(Exception e) {
-			            		
-			            }
-			        }
-			        //.readLine()은 끝에 개행문자를 읽지 않는다.            
-			        bufReader.close();
-			            
-			        FileWriter fw = new FileWriter(file, false);
-			        fw.write("");
-					fw.close();
-			    }
-				catch(Exception e){
-			        System.out.println(e);
-			        t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-			    }
-	        };
-	        	
-	        Thread t3 = new Thread(send);
-	        t3.start();
+	        t2.start();   
         }
     
+        File fileUpdate = new File(BotMusicListener.directoryDefault + "updateMessageId.txt");
+        String updateMessageId = "";
+    	try {
+    		FileReader filereader = new FileReader(fileUpdate);
+    	     
+    	    BufferedReader bufReader = new BufferedReader(filereader);
+    	    String line = "";
+    	   
+    	    while((line = bufReader.readLine()) != null){
+    	       updateMessageId = line;
+    	    }
+    	               
+    	    bufReader.close();
+    	}
+    	catch(Exception e) {
+    		 t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+    	}
+    	
+    	if(!updateMessageId.equals("")) {
+    		if(Main.num.equals("1"))
+    			t.sendMessage("군밤이 업데이트 되었어요").queue();
+    		try {
+    			TextChannel value = event.getJDA().getTextChannelById(updateMessageId.split("/")[0]);
+    			func.removeMessage(value, updateMessageId.split("/")[1], updateMessageId.split("/")[2]);
+    		}
+    		catch(Exception e) {}
+    		
+    		
+    		try {
+    			FileWriter fw = new FileWriter(fileUpdate);
+    		    fw.write("");
+    		      
+    		    fw.close();
+    		} 
+    		catch (Exception e) {
+    		    e.printStackTrace();
+    		    logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+    		}
+    	}
+    	else {
+    		if(Main.num.equals("1"))
+    			t.sendMessage("군밤이 가동을 시작했어요").queue();
+    	}
+    	
         MusicController.prepare(adtc, null, null);
-        	
-        Thread t1 = new Thread(remove1);
-        t1.start();
-        	
-
-        /*
-		voiceTc.sendMessage("**" + event.getJDA().getGuildById(base).getName() + "** \n```css\n(오프라인)```").queue(response -> {
-			voiceTcMessage.put(event.getJDA().getGuildById(base), response.getId());
-
-		});
-		*/
-		    
+        System.out.println("BOT: 군밤이 가동을 시작헀어요");
+        
+        Runnable send = () -> {
+			File file = new File(BotMusicListener.directoryDefault + "guild/usingGuilds.txt");
+				
+			try{   
+		        FileReader filereader = new FileReader(file);
+		        BufferedReader bufReader  =  new BufferedReader(filereader);
+	
+		        String line = "";
+		        while((line = bufReader.readLine()) != null){
+		            try {
+			            event.getJDA().getTextChannelById(line.split("/")[1]).sendMessage(":mega: 봇이 " + Main.because + " 되었어요").queue();
+			            if(Main.num.equals("1")) 
+			            	logtc.sendMessage(":mega: `(" + event.getJDA().getGuildById(line.split("/")[0]).getName() + ")` 봇이 " + Main.because + " 되었어요").queue();
+		            }
+		            catch(Exception e) {
+		            		
+		            }
+		        }
+		        //.readLine()은 끝에 개행문자를 읽지 않는다.            
+		        bufReader.close();
+		            
+		        FileWriter fw = new FileWriter(file, false);
+		        fw.write("");
+				fw.close();
+		    }
+			catch(Exception e){
+		        System.out.println(e);
+		        t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+		    }
+        };
+        
+        Thread t3 = new Thread(send);
+        t3.start();
+        
+        Runnable restarted = () -> {
+	        File file = new File(BotMusicListener.directoryDefault + "restartMessageId.txt");
+	        String restartMessageId = "";
+	    	try {
+	    		FileReader filereader = new FileReader(file);
+	    	     
+	    	    BufferedReader bufReader = new BufferedReader(filereader);
+	    	    String line = "";
+	    	   
+	    	    while((line = bufReader.readLine()) != null){
+	    	        restartMessageId = line;
+	    	    }
+	    	               
+	    	    bufReader.close();
+	    	}
+	    	catch(Exception e) {
+	    		 t.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+	    	}
+	    	
+	    	if(!restartMessageId.equals("")) {
+	    		
+	    		try {
+	    			event.getJDA().getTextChannelById(restartMessageId.split("/")[0]).editMessageById(restartMessageId.split("/")[1], "봇이 재시작되었어요").queue();
+	    		}
+	    		catch(Exception e) {}
+	    		
+	    		
+        		try {
+        			FileWriter fw = new FileWriter(file);
+        		    fw.write("");
+        		      
+        		    fw.close();
+        		} 
+        		catch (Exception e) {
+        		    e.printStackTrace();
+        		    logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+        		}
+	    	}
+        };
+        Thread t4 = new Thread(restarted);
+        t4.start();
+        
 	}
 	
-	@Override
-	public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
-		if(event.getGuild().getId().equals(born)) { //새벽반
-			String name = event.getMember().getNickname();
-
-			String id = event.getMember().getId();
-			Guild guild = event.getJDA().getGuildById(base);
-			if(id.toString().contains(admin)||guild.getMemberById(id) == null) return;
-
-			guild.getMemberById(id).modifyNickname(name).queue();
-		}
-	}
-
+	
 	@Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
 		
 		int mat = 0;
 		
-		members.clear();
-		members.addAll(event.getVoiceState().getChannel().getMembers());
+		if(event.getVoiceState().getChannel().getMembers().contains(event.getGuild().getSelfMember()))
+			mat = 1;
 		
-		
-		end:
-		for(int i=0; i<members.size(); i++)
-	        if(members.get(i).getId().equals(bot)) {
-	        	mat = 1;
-	        	break end;
-	        }
-	        
 		String value = "";
     	try {
     		value = voiceTcMessage.get(event.getGuild());
     	}
     	catch(Exception e) {}
     	
-	    if(mat == 1) {
-	    	
-        	if(members.size() > 1) {
-    			MusicController.autoResume(event.getGuild(), event, members, value, null);
-    		}
-     
+	    if(mat == 0) return;
+
+		ArrayList<Member> members = new ArrayList<>();
+		members.addAll(event.getVoiceState().getChannel().getMembers());
+		
+        if(members.size() > 1) {
+    		MusicController.autoResume(event.getGuild(), event, members, value, null);
+    	}
+        else {
+        		
+        	StringBuilder s = new StringBuilder();
+			StringBuilder t = new StringBuilder();
+				
+			String title = "**" + event.getGuild().getName() + "/" + event.getChannelJoined().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
+			if(event.getGuild().getAudioManager().isSelfMuted() == true) {
+				title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getChannelJoined().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
+			}
+				
+			s.append(title);
+			t.append(title);
+				
+			String valu = value;
+		    Runnable edit = () -> {
+		    	try {
+			    	voiceTc.editMessageById(valu, voiceStats(s, members)).complete();	
+		    	}
+			    		
+				catch(Exception e) {
+				    voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
+				    	voiceTcMessage.put(event.getChannelJoined().getGuild(), response.getId());
+				
+				   	});
+				}
+			};
+			Thread t1 = new Thread(edit);
+			t1.start();
+
 	    }
   
     }
@@ -330,80 +395,79 @@ public class BotMusicListener extends ListenerAdapter {
 	@Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
 		
-		if(event.getGuild().getMemberById(bot).getVoiceState().getChannel() == null) return;
+		if(event.getGuild().getAudioManager().isConnected() == false) return;
 		
 		boolean inBot = false;
 		
-		end1:
-		for(int i = 0; i<event.getChannelJoined().getMembers().size(); i++) {
-			if(event.getChannelJoined().getMembers().get(i).getId().equals(bot)) {
-				inBot = true;
-				break end1;
-			}
-		}
+		if(event.getMember().getVoiceState().getChannel().getMembers().contains(event.getGuild().getSelfMember()))
+			inBot = true;
 		
-		if(inBot == false) {
-			end2:
-			for(int i = 0; i<event.getChannelLeft().getMembers().size(); i++) {
-				if(event.getChannelLeft().getMembers().get(i).getId().equals(bot)) {
-					inBot = true;
-					break end2;
-				}
-			}
-		}
-		
-		if(inBot == true) {
-			members.clear();
-			members.addAll(event.getGuild().getMemberById(bot).getVoiceState().getChannel().getMembers());
-	
-			int memberSize = event.getGuild().getMemberById(bot).getVoiceState().getChannel().getMembers().size();
-	        String value = "";
-	        
-	        try {
-	    		value = voiceTcMessage.get(event.getGuild());
-	    	}
-	    	catch(Exception e) {}
-			
-			if(memberSize > 1) {
-				MusicController.autoResume(event.getGuild(), null, members, value, event);
-			}
-			else if(memberSize <= 1) {
-				MusicController.autoPauseToMove(event.getGuild(), event);
-			}
-		
-	    	StringBuilder s = new StringBuilder();
-	    	StringBuilder t = new StringBuilder();
-	    	
-	    	String title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-	    	if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-	    		title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-	    	}
-	    	
-	    	s.append(title);
-	    	t.append(title);
-	    	
-	        String valu = value;
-	        Runnable edit = () -> {
-	        	try {
-	        		voiceTc.editMessageById(valu, voiceStats(s, members)).complete();	
-	        	}
-	        	catch(Exception e) {
-	        		voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
-		   				 voiceTcMessage.put(event.getGuild(), response.getId());
-	
-		   			});
-	        	}
-	        	
-	        };
-	        Thread t1 = new Thread(edit);
-	        t1.start();
-		}
 
+        if(inBot == false) return;
+
+		String value = "";
+        
+        try {
+    		value = voiceTcMessage.get(event.getGuild());
+    	}
+    	catch(Exception e) {}
+		
+        ArrayList<Member> members = new ArrayList<>();
+        
+        if(event.getMember().getId().equals(bot)) {
+			members.addAll(event.getChannelJoined().getMembers());
+        }
+        else {
+			members.addAll(event.getGuild().getAudioManager().getConnectedChannel().getMembers());
+        }
+        	
+
+		if(members.size() > 1) {
+			MusicController.autoResume(event.getGuild(), null, members, value, event);
+			return;
+		}
+		else if(members.size() <= 1) {
+			MusicController.autoPauseToMove(event.getGuild(), event);
+				
+			StringBuilder s = new StringBuilder();
+		    StringBuilder t = new StringBuilder();
+		    	
+		   
+		    Object o = event.getGuild().getAudioManager().getConnectedChannel().getName();
+		    if(event.getMember().getId().equals(bot)) {
+		    	o = event.getChannelJoined().getName();
+		    }
+		    
+		    String title = "**" + event.getGuild().getName() + "/" + o + "**의 인원 (" + members.size() + "명)\n```css\n";
+		    if(event.getGuild().getAudioManager().isSelfMuted() == true) {
+		    	title = "**(일시정지) " + event.getGuild().getName() + "/" + o + "**의 인원 (" + members.size() + "명)\n```css\n";
+		    }
+		    	
+		    s.append(title);
+		    t.append(title);
+		    
+		    String valu = value;
+		    Runnable edit = () -> {
+		        try {
+		        	voiceTc.editMessageById(valu, voiceStats(s, members)).complete();
+		        }
+		        catch(Exception e) {
+		        	voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
+		        		voiceTcMessage.put(event.getGuild(), response.getId());
+
+			   		});
+		        }
+		        	
+		    };
+		    Thread t1 = new Thread(edit);
+		    t1.start();
+		}
+		
 	}
 	
 	@Override
     public void onDisconnect(DisconnectEvent event) {
-		jdatc.sendMessage("연결 끊김 코드: **" + event.getCloseCode() + "** `" + event.getClientCloseFrame() + "`").queue();
+		
 		System.out.println("연결 끊김 코드: **" + event.getCloseCode() + "**, " + event.getClientCloseFrame());
 		
 		if(event.getClientCloseFrame().getCloseCode() == 1008||event.getClientCloseFrame().getCloseCode() == 1000) {
@@ -415,132 +479,121 @@ public class BotMusicListener extends ListenerAdapter {
 			MusicController.disconnect(event.getClientCloseFrame().getCloseCode(), event);
 			
 		}
-	
+		
+		jdatc.sendMessage("연결 끊김 코드: **" + event.getCloseCode() + "** `" + event.getClientCloseFrame() + "`").queue();
 	}
 	
 	@Override
     public void onResume(ResumedEvent event) {
-		jdatc.sendMessage("재연결됨").queue();
+		MusicController.reconnect();
+		jdatc.sendMessage("- resume됨").queue();
+	}
+	
+	@Override 
+	public void onReconnect(ReconnectedEvent event) {
+		MusicController.reconnect();
+		jdatc.sendMessage("- reconnect됨").queue();
 	}
 	
 	@Override
 	public void onGuildVoiceStream(GuildVoiceStreamEvent event) {
+		if(event.getGuild().getAudioManager().isConnected() == false) return;
 		try {
-			boolean inBot = false;
+			ArrayList<Member> members = new ArrayList<>();
+			members.addAll(event.getGuild().getAudioManager().getConnectedChannel().getMembers());
 			
-			end:
-			for(int i = 0; i<event.getVoiceState().getChannel().getMembers().size(); i++) {
-				if(event.getVoiceState().getChannel().getMembers().get(i).getId().equals(bot)) {
-					inBot = true;
-					break end;
-				}
-			}
-			
-			if(inBot == true) {
-				members.clear();
-				members.addAll(event.getGuild().getMemberById(bot).getVoiceState().getChannel().getMembers());
-				
-				String value = "";
-		        try {
-		    		value = voiceTcMessage.get(event.getGuild());
-		    	}
-		    	catch(Exception e) {}
+			String value = "";
+		    try {
+		    	value = voiceTcMessage.get(event.getGuild());
+		    }
+		    catch(Exception e) {}
 		        
-		        StringBuilder s = new StringBuilder();
-		    	StringBuilder t = new StringBuilder();
+		    StringBuilder s = new StringBuilder();
+		    StringBuilder t = new StringBuilder();
 		    	
-		    	String title = "";
+		    String title = "";
 				
-				if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-			    	title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-				}
-				else {
-					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-				}
-				
-				s.append(title);
-		    	t.append(title);
-		    	
-		    	String valu = value;
-		        Runnable edit = () -> {
-		        	try {
-		        		voiceTc.editMessageById(valu, voiceStats(s, members)).complete();	
-		        	}
-		        	catch(Exception e) {
-		        		voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
-			   				 voiceTcMessage.put(event.getGuild(), response.getId());
-
-			   			});
-		        	}
-		        	
-		        };
-		        Thread t1 = new Thread(edit);
-		        t1.start();
-			
+			if(event.getGuild().getAudioManager().isSelfMuted() == true) {
+			    title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
 			}
+			else {
+				title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
+			}
+				
+			s.append(title);
+		    t.append(title);
+		    	
+		    String valu = value;
+		    Runnable edit = () -> {
+		        try {
+		        	voiceTc.editMessageById(valu, voiceStats(s, members)).complete();	
+		        }
+		        catch(Exception e) {
+		        	voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
+		        		voiceTcMessage.put(event.getGuild(), response.getId());
+
+			   		});
+		        }
+		        	
+		    };
+		    Thread t1 = new Thread(edit);
+		    t1.start();
+			
 		}
 		catch(Exception e) {}
 	}
 	
 	@Override
 	public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
+		
+		if(event.getGuild().getAudioManager().isConnected() == false) return;
+		
 		try {
-			boolean inBot = false;
+			ArrayList<Member> members = new ArrayList<>();
+			members.addAll(event.getGuild().getAudioManager().getConnectedChannel().getMembers());
 			
-			end:
-			for(int i = 0; i<event.getVoiceState().getChannel().getMembers().size(); i++) {
-				if(event.getVoiceState().getChannel().getMembers().get(i).getId().equals(bot)) {
-					inBot = true;
-					break end;
-				}
-			}
-			
-			if(inBot == true) {
-				members.clear();
-				members.addAll(event.getGuild().getMemberById(bot).getVoiceState().getChannel().getMembers());
-				
-				String value = "";
-		        try {
-		    		value = voiceTcMessage.get(event.getGuild());
-		    	}
-		    	catch(Exception e) {}
+			String value = "";
+		    try {
+		    	value = voiceTcMessage.get(event.getGuild());
+		    }
+		    catch(Exception e) {}
 		        
-		        StringBuilder s = new StringBuilder();
-		    	StringBuilder t = new StringBuilder();
+		    StringBuilder s = new StringBuilder();
+		    StringBuilder t = new StringBuilder();
 		    	
-		    	String title = "";
+		    String title = "";
 				
-				if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-			    	title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-				}
-				else {
-					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-				}
-				
-				s.append(title);
-		    	t.append(title);
-		    	
-		    	String valu = value;
-		        Runnable edit = () -> {
-		        	try {
-		        		voiceTc.editMessageById(valu, voiceStats(s, members)).complete();	
-		        	}
-		        	catch(Exception e) {
-		        		voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
-			   				 voiceTcMessage.put(event.getGuild(), response.getId());
-
-			   			});
-		        	}
-		        	
-		        };
-		        Thread t1 = new Thread(edit);
-		        t1.start();
-			
+			if(event.getGuild().getAudioManager().isSelfMuted() == true) {
+			    title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
 			}
+			else {
+				title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
+			}
+				
+			s.append(title);
+		    t.append(title);
+		    	
+		    String valu = value;
+		    Runnable edit = () -> {
+		        try {
+		        	voiceTc.editMessageById(valu, voiceStats(s, members)).complete();	
+		        }
+		        catch(Exception e) {
+		        	voiceTc.sendMessage(voiceStats(t, members)).queue(response -> {
+		        		voiceTcMessage.put(event.getGuild(), response.getId());
+
+			   		});
+		        }
+		        	
+		    };
+		    Thread t1 = new Thread(edit);
+		    t1.start();
+			
 		}
 		catch(Exception e) {}
 	}
 	
+	/*
 	@Override
 	public void onGuildVoiceSelfMute(GuildVoiceSelfMuteEvent event) {
 		if(event.getMember().getId().equals(bot)) {
@@ -554,19 +607,15 @@ public class BotMusicListener extends ListenerAdapter {
 		    		value = voiceTcMessage.get(event.getGuild());
 		    	}
 		    	catch(Exception e) {}
-				
-		        
+		      
 				StringBuilder s = new StringBuilder();
 		    	StringBuilder t = new StringBuilder();
 		    	String title = "";
 				
-				if(event.getGuild().getAudioManager().isSelfMuted() == true) {
-			    	title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-				}
-				else {
-					title = "**" + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
-				}
-	
+				if(event.getGuild().getAudioManager().isSelfMuted() == false) return;
+			   
+				title = "**(일시정지) " + event.getGuild().getName() + "/" + event.getGuild().getMemberById(bot).getVoiceState().getChannel().getName() + "**의 인원 (" + members.size() + "명)\n```css\n";
+				
 		    	s.append(title);
 		    	t.append(title);
 		    	
@@ -591,20 +640,24 @@ public class BotMusicListener extends ListenerAdapter {
 			catch(Exception e) {}
 			
 		}
+		
 	
 	}
+	*/
 	
 	@Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
-		members.clear();
-		members.addAll(event.getChannelLeft().getMembers());
 		
 		if(event.getMember().getId().equals(bot)) {
-			
 			MusicController.disconnectVoice(event.getGuild(), event.getChannelLeft());
-			
 	    }
 	    else {
+
+	    	if(event.getGuild().getAudioManager().isConnected() == false) return;
+	    	
+	    	ArrayList<Member> members = new ArrayList<>();
+	    	members.addAll(event.getChannelLeft().getMembers());
+	    	
 	    	boolean available = false;
 	    	
 	    	end:
@@ -623,14 +676,13 @@ public class BotMusicListener extends ListenerAdapter {
 	    		value = voiceTcMessage.get(event.getGuild());
 	    	}
 	    	catch(Exception e) {}
-			
+
 			if(members.size() == 1) {
 				if(event.getGuild().getAudioManager().isSelfMuted() == false) {
 					MusicController.autoPause(event.getGuild(), event);
-					return;
 				}
 			}
-
+			
 			StringBuilder s = new StringBuilder();
 			StringBuilder t = new StringBuilder();
 			
@@ -658,33 +710,31 @@ public class BotMusicListener extends ListenerAdapter {
 		    Thread t1 = new Thread(edit);
 		    t1.start();
 
-	    	
-	    }
+		}
+		
 	}
 
 	public static void update(Guild guild) {
-		String eachId = voiceTcMessage.get(guild);
-		/*
-		try {
-			voiceTc.editMessageById(eachId, "**" + guild.getName() + "** \n```css\n(오프라인)```").complete();
-		}
 		
-		catch(Exception e){
-			voiceTc.sendMessage("**" + guild.getName() + "** \n```css\n(오프라인)```").queue(response -> {
-			 		voiceTcMessage.put(guild, response.getId());
-
-			 	});
-		}
-		*/
-		
-		try {
-			voiceTc.deleteMessageById(eachId).complete();
-		}
-		
-		catch(Exception e){}
-		
+		Runnable delete = () -> {
+			String eachId = voiceTcMessage.get(guild);
+			
+			try {
+				voiceTc.deleteMessageById(eachId).complete();
+			}
+			catch(Exception e) {}
+			
+			if(MusicController.isInTotal == 0) {
+				if(allExitAlert == 1) {
+					MusicController.updateGunBam(adtc, updateResponse);
+					allExitAlert = 0;
+					
+				}
+			}
+		};
+		Thread t = new Thread(delete);
+		t.start();
 	}
-	
 	
 	
 	// message receive
@@ -696,17 +746,7 @@ public class BotMusicListener extends ListenerAdapter {
         Message msg = event.getMessage();
         Guild guild1 = event.getGuild();
         
-        if(Main.num.equals("1")) bot = "661001856616497162";
-		else if(Main.num.equals("2")) bot = "661042002531713035";
-        
-        
-        adtc = event.getJDA().getTextChannelById("679204476808069120");
-        logtc = event.getJDA().getTextChannelById("686517298470846495");
-        listentc = event.getJDA().getTextChannelById("686949011705430062");
-        dokingtc = event.getJDA().getTextChannelById(dokingStr);
-        jdatc = event.getJDA().getTextChannelById("706443648023134259");
-        errortc = event.getJDA().getTextChannelById("713233574995820627");
-
+       
         if(!event.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_WRITE)) {
         	return;
         }
@@ -715,8 +755,8 @@ public class BotMusicListener extends ListenerAdapter {
             if(msg.getContentRaw().equals("ㅣ나가기")||msg.getContentRaw().equals("$나가기")) {
             	Guild guild = event.getGuild();
             	
-                if(guild.getId().equals(born)) {
-                	 MusicController.stopPlaying(tc, msg, event, 3, 2, "kor");
+                if(Main.saveQueueAllowGuild.contains(guild.getId())) {
+                	MusicController.stopPlaying(tc, msg, event, 3, 2, "kor");
                 }
                 else {
                 	MusicController.stopPlaying(tc, msg, event, 3, 0, "kor");
@@ -734,61 +774,28 @@ public class BotMusicListener extends ListenerAdapter {
         
         	}
         	
-        	if(tc.toString().contains("686949011705430062")&&user.toString().contains(admin)) {
+        	if(tc.toString().contains("686949011705430062")&&user.getId().equals(admin)) {
         		dokingtc.sendMessage(msg.getContentRaw()).queue();
         	}
         }
 
-  
-        if(guild1.getId().equals(born)) {}
-        else {MusicController.save(tc, event, 0);}
-
         
-    	
-        if(administrator == 1) {
-        	if(tc == general) {
-        		
-	        	System.out.println("");
-	         	System.out.println(user.toString() + ": " + msg.getContentRaw());
-        	}
-        	
-	        Administrator.admin(general, msg, guild1, user, event);
-        	return;
-        }
-        
-        if(guild1.getId().equals("374071874222686211")&&msg.getContentRaw().startsWith("$")) return;
-        if(guild1.toString().contains(base)||tc.toString().contains("553254281495576577")) {}
-        else
-        	general = tc;
+        if((guild1.getId().equals("374071874222686211")&&msg.getContentRaw().startsWith("$")) || msg.getContentRaw().startsWith("$botify")) return;
         
 	    
-        if(tc.toString().contains("662897914405715978")) {
-        	if(msg.getContentRaw().equals("사용법")) {
-        		if(send == 0) {
-        			tc.sendMessage("군밤사용법으로 알아보거나 Haribo 쓰는 것 처럼 써봐요").queue();
-        			send = 1;
-        		}
-        	}
-        }
-        
         //is bot return
         if(user.isBot())  {
         	return;}
  
-        if(msg.getContentRaw().toString().contains("ㅣ")) {}
-        else {
-        	if(guild1.getId().equals(born))
-        		recentId = msg.getId();
-        }
-     
-       
-        if(msg.getContentRaw().contains("군밤")&& (msg.getContentRaw().contains("설명서") || msg.getContentRaw().contains("사용법") || msg.getContentRaw().contains("도움말"))){
+        
+        //새벽반의 general채널에선 불가
+        if(!Main.muteChannels.contains(tc.getId()) && msg.getContentRaw().contains("군밤")&& (msg.getContentRaw().contains("설명서") || msg.getContentRaw().contains("사용법") || msg.getContentRaw().contains("도움말"))){
         	System.out.println("");
     		System.out.println(guild1.toString() + "\n" + user.toString() + ": " + msg.getContentRaw());
     		Date date = new Date();
         	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
     		String str = dayTime.format(date);
-        	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
+        	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	Controller.help(tc, msg, event, "kor");
         	
         }
@@ -799,7 +806,7 @@ public class BotMusicListener extends ListenerAdapter {
         	Date date = new Date();
         	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
     		String str = dayTime.format(date);
-        	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
+        	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	String minus = msg.getContentRaw().replaceAll("[^0-9]", "");
         	
         	if(func.isNumber(minus) == true) {
@@ -818,7 +825,7 @@ public class BotMusicListener extends ListenerAdapter {
         	Date date = new Date();
         	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
     		String str = dayTime.format(date);
-        	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
+        	log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
         	String plus = msg.getContentRaw().replaceAll("[^0-9]", "");
         	
         	if(func.isNumber(plus) == true) {
@@ -889,7 +896,7 @@ public class BotMusicListener extends ListenerAdapter {
 	        Command.lastDay(tc, msg);
         }
         
-        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("분")&&(msg.getContentRaw().contains("후")||msg.getContentRaw().contains("뒤"))&&msg.getContentRaw().contains("알려")) {
+        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("분")&&(msg.getContentRaw().contains("후")||msg.getContentRaw().contains("뒤"))&&(msg.getContentRaw().contains("알려")||msg.getContentRaw().contains("알랴"))) {
         	String min = msg.getContentRaw().replaceAll("[^0-9]", "");
 
         	Controller.timer(user, tc, msg, event, Integer.parseInt(min));
@@ -900,15 +907,20 @@ public class BotMusicListener extends ListenerAdapter {
         	
         	Controller.timer(user, tc, msg, event, Integer.parseInt(min));
         }
-        
-        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("타이머")&&msg.getContentRaw().contains("분")&&(msg.getContentRaw().contains("남았")||msg.getContentRaw().contains("남음")||msg.getContentRaw().contains("뒤에"))) {
-        	
-        	Controller.nowTimer(tc, msg, event);
-        }
-        
+       
         else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("타이머")&&(msg.getContentRaw().contains("없애")||msg.getContentRaw().contains("지워")||msg.getContentRaw().contains("삭제")||msg.getContentRaw().contains("취소")||msg.getContentRaw().contains("제거"))) {
         	
         	Controller.timerCancel(tc, msg, event);
+        }
+        
+        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("타이머")&&msg.getContentRaw().contains("다시")) {
+        	
+        	Controller.reTimer(tc, msg, event);
+        }
+        
+        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("타이머")) {
+        	
+        	Controller.nowTimer(tc, msg, event);
         }
         
         else if(msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("몇시")||msg.getContentRaw().contains("몇분")||msg.getContentRaw().contains("몇초")||msg.getContentRaw().contains("몇 시")||msg.getContentRaw().contains("몇 분")||msg.getContentRaw().contains("몇 초"))){
@@ -921,10 +933,62 @@ public class BotMusicListener extends ListenerAdapter {
         	
         }
         
-        else if(msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("=")||msg.getContentRaw().contains("계산"))){
-        	Calculate.calculate(tc, msg);
+        else if(msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("=")||msg.getContentRaw().contains("계산"))) {
+        	Date date = new Date();
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
+    		String str = dayTime.format(date);
+    		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
+        	
+        	Controller.calculate(tc, msg, event);
         }
         
+        else if(msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("16진수")||msg.getContentRaw().contains("8진수")||msg.getContentRaw().contains("2진수")||msg.getContentRaw().contains("16진법")||msg.getContentRaw().contains("10진법")||msg.getContentRaw().contains("8진법")||msg.getContentRaw().contains("2진법")) && (msg.getContentRaw().contains("변환")||msg.getContentRaw().contains("바꿔"))) {
+        	Date date = new Date();
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
+    		String str = dayTime.format(date);
+    		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
+        	
+        	Controller.translateType(tc, msg, event);
+        }
+  
+        //getInfoJDA
+        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("정보")) {
+        	String checkNum = msg.getContentRaw().replaceAll("[^0-9]", "");
+        	
+        	if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+        		String str = "링크 첨부";
+    			
+    			tc.sendMessage(func.askPermission(str, "kor")).queue();
+    			log(tc, event, msg, "BOT: " + str);
+            	return;
+            }
+        	
+        	if(checkNum.equals("")) {
+        		if(msg.getContentRaw().contains("내")||msg.getContentRaw().contains("나")) {
+        			EmbedBuilder eb = new EmbedBuilder();
+    	        	eb.setColor(Color.decode(colorDefault));
+    	        	eb.setAuthor("집계 중...");
+    	        	
+    	        	tc.sendMessage(eb.build()).queue(response -> {
+    	        		Controller.showMyInfo(tc, msg, event, "kor", response);
+    	        	});
+        		}
+        		else {
+        			Controller.showInfo(tc, msg, event, "kor");
+        		}
+        	}
+        	else {
+	        	EmbedBuilder eb = new EmbedBuilder();
+	        	eb.setColor(Color.decode(colorDefault));
+	        	eb.setAuthor("집계 중...");
+	        	
+	        	tc.sendMessage(eb.build()).queue(response -> {
+	        		informationAboutId(tc, msg, response, checkNum);
+	        	});
+        	}
+
+        }
+   
         else if(msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("사진")||msg.getContentRaw().contains("프로필")||msg.getContentRaw().contains("프사"))) {
         	String str = msg.getContentRaw().replaceAll("[^0-9]", "");
         	
@@ -932,6 +996,13 @@ public class BotMusicListener extends ListenerAdapter {
         	eb.setColor(Color.decode(colorDefault));
         	eb.setTitle("불러오는 중...");
         	
+        	if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+        		String message = "링크 첨부";
+    			
+    			tc.sendMessage(func.askPermission(message, "kor")).queue();
+    			log(tc, event, msg, "BOT: " + message);
+            	return;
+            }
         	
         	tc.sendMessage(eb.build()).queue(response -> {
         		try {
@@ -948,20 +1019,7 @@ public class BotMusicListener extends ListenerAdapter {
 
         }
        
-        //getInfoJDA
-        else if(user.toString().contains(admin) && (msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("정보")))) {
-        	
-        	EmbedBuilder eb = new EmbedBuilder();
-        	eb.setColor(Color.decode(colorDefault));
-        	eb.setAuthor("집계 중...");
-        	
-        	tc.sendMessage(eb.build()).queue(response -> {
-        		informationAboutId(tc, msg, response);
-        	});
-
-        }
-        
-        else if(user.toString().contains(admin) && (msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("누구")||msg.getContentRaw().contains("누군")||msg.getContentRaw().contains("알아")||msg.getContentRaw().contains("찾아")||msg.getContentRaw().contains("조사")))){
+        else if(user.getId().equals(admin) && (msg.getContentRaw().contains("군밤")&&(msg.getContentRaw().contains("누구")||msg.getContentRaw().contains("누군")||msg.getContentRaw().contains("알아")||msg.getContentRaw().contains("찾아")||msg.getContentRaw().contains("조사")))){
         	if(msg.getContentRaw().contains("에서")) {
         		searchPeopleSelectGuild(tc, msg, event);
         	}
@@ -976,7 +1034,23 @@ public class BotMusicListener extends ListenerAdapter {
         	
         }
         
-        else if(msg.toString().contains("군밤")&&msg.toString().contains("주사위")) {
+        else if(user.getId().equals(admin) && (msg.getContentRaw().equals("ㅣ프로세스강제종료")||msg.getContentRaw().equals("ㅣ프로세스 강제종료")||msg.getContentRaw().equals("ㅣ프로세스 강제중지")||msg.getContentRaw().equals("ㅣ프로세스강제중지")||msg.getContentRaw().equals("ㅣ프로그램 강제종료")||msg.getContentRaw().equals("ㅣ프로그램 강제중지")||msg.getContentRaw().equals("ㅣ프로그램강제종료")||msg.getContentRaw().equals("ㅣ프로그램강제중지"))) {
+	        tc.sendMessage("군밤이를 종료해요").queue();
+	        System.exit(0);
+        }
+        
+        else if(user.getId().equals(admin) && (msg.getContentRaw().equals("ㅣ프로세스종료")||msg.getContentRaw().equals("ㅣ프로세스 종료")||msg.getContentRaw().equals("ㅣ프로세스 중지")||msg.getContentRaw().equals("ㅣ프로세스중지")||msg.getContentRaw().equals("ㅣ프로그램 종료")||msg.getContentRaw().equals("ㅣ프로그램 중지")||msg.getContentRaw().equals("ㅣ프로그램종료")||msg.getContentRaw().equals("ㅣ프로그램중지"))) {
+        	if(MusicController.isInTotal == 0) {
+	        	tc.sendMessage("군밤이를 종료해요").queue();
+	        	event.getJDA().shutdown();
+	        	System.exit(0);
+        	}
+        	else {
+        		tc.sendMessage("이용중인 사람이 있어요").queue();
+        	}
+        }
+        
+        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("주사위")) {
         	Date date = new Date();
         	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
     		String str = dayTime.format(date);
@@ -1016,10 +1090,29 @@ public class BotMusicListener extends ListenerAdapter {
         	}
         }
         
+        else if(msg.getContentRaw().equals("가위")||msg.getContentRaw().equals("바위")||msg.getContentRaw().equals("보")||msg.getContentRaw().equals("묵")||msg.getContentRaw().equals("찌")||msg.getContentRaw().equals("빠")||msg.getContentRaw().equals("보자기")||msg.getContentRaw().equals("주먹")) {
+        	
+        	PlayController.receiveRsp(tc, msg, event, "receive", msg.getContentRaw());
+        }
+        
+        else if(msg.getContentRaw().contains("군밤")&&msg.getContentRaw().contains("가위바위보")) {
+        	Date date = new Date();
+        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
+    		String str = dayTime.format(date);
+    		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__ `" + tc + "`\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
+        	
+    		if(msg.getContentRaw().contains("멀티")||msg.getContentRaw().contains("같이"))
+    			PlayController.rspMulti(tc, msg, event);
+    		else 
+    			PlayController.rsp(tc, msg, event);
+        }
+        
         
         //명령어 시작
-        if(msg.getContentRaw().startsWith("$!")||msg.getContentRaw().startsWith("$$")||msg.getContentRaw().startsWith("$n"))
-        	return;
+        for(int i = 0; i<Main.ignorePrefix.size(); i++) {
+        	if(msg.getContentRaw().startsWith(Main.ignorePrefix.get(i)))
+        		return;
+        }
         
         if(msg.getContentRaw().startsWith("ㅣ")||msg.getContentRaw().startsWith("$")) {}
         else {
@@ -1028,7 +1121,7 @@ public class BotMusicListener extends ListenerAdapter {
         
         if(guild1.toString().contains("264445053596991498")) return;
         if(isError == 1) {
-        	if(user.toString().contains(admin)) {}
+        	if(user.getId().equals(admin)) {}
         	else {
         		tc.sendMessage("점검 중으로 잠시 뒤에 시도하세요").queue();
         	}
@@ -1049,12 +1142,8 @@ public class BotMusicListener extends ListenerAdapter {
         	else 
         		MusicController.alertTc(tc, event);
        	
-        	if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("guilds")||args[0].equalsIgnoreCase("g")||args[0].equalsIgnoreCase("ㅎ"))){
-             	MusicController.guilds(tc, msg, event);
-
-             }
-        	 
-        	if(user.toString().contains(admin)) {}
+        	
+        	if(user.getId().equals(admin)) {}
         	else { //로그찍기
 	        	System.out.println("");
 	        	System.out.println(guild1 + "\n" + user.toString() + ": " + msg.getContentRaw());        		
@@ -1065,56 +1154,10 @@ public class BotMusicListener extends ListenerAdapter {
         		
         	}
    
-
-        	send = 0;    
         	
-        	/*
-        	if(ready == 0) {
-	        	if(user.toString().contains(admin)) {}
-	        	else {
-	        		tc.sendMessage("준비 완료하는 중이에요").queue();
-	        		System.out.println("BOT: 준비 완료하는 중이에요");
-	        		
-	        		Date date = new Date();
-		        	SimpleDateFormat dayTime = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm:ss");
-		    		String str = dayTime.format(date);
-	        		log(tc, event, msg, ".\n.\n" + str + "\n__" + guild1 + "__\n" + user.toString() + ": " + msg.getContentRaw() + "\n");
-	        		return;
-	        	}
-        	}
-        	*/
-        	
-            if(args.length <= 0) return;
+           if(args.length <= 0) return;
             
-            if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("administrator")){
-            	/*
-            	tc.sendMessage("access Administrator").queue();
-
-            	MessageHistory mh = new MessageHistory(tc);
-	            List<Message> msgs = mh.retrievePast(2).complete();
-	            tc.deleteMessages(msgs).complete();
-            	
-	            tc.sendMessage("```봇이 일지 중지됩니다```").queue();
-	            */
-            	String vc = "";
-                try{ 
-                	vc =args[1];
-
-                } catch(Exception e){
-                	tc.sendMessage(".").queue();
-                	System.out.println("BOT: .");
-                	 
-                    return;
-                }
-                general = event.getJDA().getTextChannelById(vc);
-            	System.out.println(general.getGuild().toString() + "의 " + general.toString() + "채널에 보냅니다");
-            	administrator = 1;
-            	
-            	Administrator.admin(tc, msg, guild1, user, event);
- 
-            }
-  
-            else if((user.toString().contains(admin)||user.toString().contains(chanha))&&(args[0].equalsIgnoreCase("myclear")||args[0].equalsIgnoreCase("mc")||args[0].equalsIgnoreCase("ㅡㅊ"))){
+           if((user.getId().equals(admin)||Main.clearAllowUser.contains(user.getId()))&&(args[0].equalsIgnoreCase("myclear")||args[0].equalsIgnoreCase("mc")||args[0].equalsIgnoreCase("ㅡㅊ"))){
             	
                 if(args.length != 2) {
                 	MessageHistory mh1 = new MessageHistory(tc);
@@ -1211,55 +1254,54 @@ public class BotMusicListener extends ListenerAdapter {
                 try {
                 	int co = count;
                 	inputClear = msg;
-		                MessageHistory mh = tc.getHistory();
-		                List<Message> msgs = mh.retrievePast(co + 1).complete();
+                	
+                	MessageHistory mh = tc.getHistory();
+		            List<Message> msgs = mh.retrievePast(co + 1).complete();
 		                
-		                for(int i = 0; i<msgs.size(); i++) {
-	 	            		if(msg.getAuthor() != msgs.get(i).getAuthor()) {
-		 	            		msgs.remove(i);
-		 	            		co = co - 1;
-	 	            		}
-	 	            	}
+		            for(int i = 0; i<msgs.size(); i++) {
+	 	           		if(msg.getAuthor() != msgs.get(i).getAuthor()) {
+		 	           		msgs.remove(i);
+		 	           		co = co - 1;
+	 	           		}
+	 	           	}
 		                
-		                if(co > 5) {
-		                	MusicController.clear(tc, msgs, msg, event, co);
-		                	return;
-		                }
+		            if(co > 5) {
+		               	MusicController.clear(tc, msgs, msg, event, co);
+		               	return;
+		            }
 		                
-		                int coun = co;
-		                tc.sendMessage(co + " deleted of " + count + " `'" + msgs.get(co).getContentRaw() + "' 까지`").queue(response -> {
-	          
-	                		Runnable remove = () -> {
-	 		                	
-		                		try {
-				                	tc.deleteMessages(msgs).complete();
-				                	response.delete().queueAfter(1500, TimeUnit.MILLISECONDS);
-				                }
-				                catch(Exception e) {
-				                	
-				                	for(int i = 0; i<coun+1; i++) {
-				                		try {
-				                			msgs.get(i).delete().complete();
-				                		}
-				                		catch(Exception f) {}
-					                	
-				                		
-					                	if(i == coun) {
-					                		try {
-					                			response.delete().complete();
-					                		}
-					                		catch(Exception g) {}
-					                	}
-				      
-				                	}
-				                }
-				               
-				            };
+		            int coun = co;
+		            tc.sendMessage(co + " deleted of " + count + " `'" + msgs.get(co).getContentRaw() + "' 까지`").queue(response -> {
+		                Runnable remove = () -> {
+		                	try {
+				               	tc.deleteMessages(msgs).complete();
+				               	response.delete().queueAfter(1500, TimeUnit.MILLISECONDS);
+				            }
+				            catch(Exception e) {
+				            	 	
+				                for(int i = 0; i<coun+1; i++) {
+				               		try {
+				               			msgs.get(i).delete().complete();
+				               		}
+				               		catch(Exception f) {}
+					               	
+				               		
+					               	if(i == coun) {
+					               		try {
+					               			response.delete().complete();
+					               		}
+					               		catch(Exception g) {}
+					               	}
+				     
+				               	}
+				            }
+		                };
 
-		                	Thread t = new Thread(remove);
-		                	t.start();
-	                		
-	                	});
+	                	Thread t = new Thread(remove);
+	                	t.start();
+	            		
+	               	});
+                	
 	
                 }
                 catch(Exception e) {
@@ -1269,7 +1311,7 @@ public class BotMusicListener extends ListenerAdapter {
  
             }
             
-            else if((user.toString().contains(admin)||user.toString().contains(chanha))&&(args[0].equalsIgnoreCase("c")||args[0].equalsIgnoreCase("clear")||args[0].equalsIgnoreCase("ㅊ"))){
+            else if((user.getId().equals(admin)||Main.clearAllowUser.contains(user.getId()))&&(args[0].equalsIgnoreCase("c")||args[0].equalsIgnoreCase("clear")||args[0].equalsIgnoreCase("ㅊ"))){
             	
                 if(args.length != 2) {
                 	MessageHistory mh1 = new MessageHistory(tc);
@@ -1356,48 +1398,44 @@ public class BotMusicListener extends ListenerAdapter {
                 try {
                 	int co = count;
                 	inputClear = msg;
-		                MessageHistory mh = tc.getHistory();
-		                List<Message> msgs = mh.retrievePast(co + 1).complete();
+		            MessageHistory mh = tc.getHistory();
+		            List<Message> msgs = mh.retrievePast(co + 1).complete();
 		                
-		                if(co > 5) {
-		                	MusicController.clear(tc, msgs, msg, event, co);
-		                	return;
-		                }
+		            if(co > 5) {
+		               	MusicController.clear(tc, msgs, msg, event, co);
+		               	return;
+		            }
 		                
-		                
-		                tc.sendMessage(co + " deleted `'" + msgs.get(co).getContentRaw() + "' 까지`").queue(response -> {
-	                		
-	                		Runnable remove = () -> {
-	 		                	
-		                		try {
-				                	tc.deleteMessages(msgs).complete();
-				                	response.delete().queueAfter(1500, TimeUnit.MILLISECONDS);
-				                }
-				                catch(Exception e) {
-				                	
-				                	for(int i = 0; i<co+1; i++) {
-				                		try {
-				                			msgs.get(i).delete().complete();
-				                		}
-				                		catch(Exception f) {}
+		            tc.sendMessage(co + " deleted `'" + msgs.get(co).getContentRaw() + "' 까지`").queue(response -> {
+		            	Runnable remove = () -> {
+		                	try {
+				               	tc.deleteMessages(msgs).complete();
+				               	response.delete().queueAfter(1500, TimeUnit.MILLISECONDS);
+				            }
+				            catch(Exception e) {
+
+				                for(int i = 0; i<co+1; i++) {
+				                	try {
+				                		msgs.get(i).delete().complete();
+				               		}
+				               		catch(Exception f) {}
 					                	
 				                		
-					                	if(i == co) {
-					                		try {
-					                			response.delete().complete();
-					                		}
-					                		catch(Exception g) {}
-					                	}
-				      
-				                	}
+					               	if(i == co) {
+					               		try {
+					               			response.delete().complete();
+					               		}
+					               		catch(Exception g) {}
+					               	}
+				     
 				                }
-				               
-				            };
+			               
+				            }
+		            	};
 
-		                	Thread t = new Thread(remove);
-		                	t.start();
-	                		
-	                	});
+		               	Thread t = new Thread(remove);
+		               	t.start();
+	                });
     	
 	   	
                 }
@@ -1407,18 +1445,18 @@ public class BotMusicListener extends ListenerAdapter {
  
             }
         
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("lock")){
+            else if(user.getId().equals(admin)&&args[0].equalsIgnoreCase("lock")){
             	MusicController.lock(tc, event, 1);
             }
             
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("상황실")){
+            else if(user.getId().equals(admin)&&args[0].equalsIgnoreCase("상황실")){
             	tc.sendMessage("저장 중...").queue(response -> {
             		MusicController.memoSave(tc, msg, event, response);
             	});
             	
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("완료")||args[0].equalsIgnoreCase("complete"))){
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("완료")||args[0].equalsIgnoreCase("complete"))){
             	File file = new File(BotMusicListener.directoryDefault + "guild/guildListSave.txt");
             	int count = 0;
             	int coun = 0;
@@ -1478,7 +1516,10 @@ public class BotMusicListener extends ListenerAdapter {
                     	msgs.append("업데이트가 완료되었어요");
                     	msgs.setEmbed(eb.build());
                     	
-                    	comp.sendMessage(msgs.build()).queue();
+                    	if(comp.getGuild().getSelfMember().hasPermission(comp, Permission.MESSAGE_EMBED_LINKS)) {
+                    		comp.sendMessage(msgs.build()).queue();
+        	            }
+                    	
                     	count = count + 1;
                     	
                     	if(count == coun)
@@ -1492,15 +1533,15 @@ public class BotMusicListener extends ListenerAdapter {
                     logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
                 }
             	
-            	tc.sendMessage("**" + count + "개** 채널에 업데이트 완료했어요").queue();
+            	tc.sendMessage("**" + count + "개** 채널에 업데이트 공지했어요").queue();
             	coun = 0;
             }
             
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("unlock")){
+            else if(user.getId().equals(admin)&&args[0].equalsIgnoreCase("unlock")){
             	MusicController.lock(tc,event, 0);
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("listen")||args[0].equalsIgnoreCase("도킹"))) {
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("listen")||args[0].equalsIgnoreCase("도킹"))) {
             	
             	String vc = "";
                 try{ 
@@ -1522,7 +1563,7 @@ public class BotMusicListener extends ListenerAdapter {
   
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("getTextChannel")||args[0].equalsIgnoreCase("채널보기"))) {
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("getTextChannel")||args[0].equalsIgnoreCase("채널보기"))) {
             	
             	String vc = "";
                 try{ 
@@ -1537,17 +1578,66 @@ public class BotMusicListener extends ListenerAdapter {
 	
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("stopListen")||args[0].equalsIgnoreCase("도킹그만")||args[0].equalsIgnoreCase("도킹멈춤")||args[0].equalsIgnoreCase("도킹나가기")||args[0].equalsIgnoreCase("도킹취소")||args[0].equalsIgnoreCase("도킹끄기"))) {
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("도킹그만")||args[0].equalsIgnoreCase("도킹멈춤")||args[0].equalsIgnoreCase("도킹나가기")||args[0].equalsIgnoreCase("도킹취소")||args[0].equalsIgnoreCase("도킹끄기"))) {
             	tc.sendMessage("```도킹을 그만해요```").queue();
             	listen = 0;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("알림")||args[0].equalsIgnoreCase("알리기")||args[0].equalsIgnoreCase("allExitAlert")||args[0].equalsIgnoreCase("모두나가면알림"))) {
-            	tc.sendMessage("모든 음성채널에서 군밤이 나가면 알림으로 알려줘요").queue();
-            	allExitAlert = 1;
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("업데이트")||args[0].equalsIgnoreCase("update"))) {
+            	if(args.length <= 1) {
+	            	String str = "봇을 컴파일 후 실행해요";
+	            	if(MusicController.isInTotal != 0) {
+	            		str = "모든 음성채널에서 군밤이 나가면 재시작해요";
+		            	allExitAlert = 1;
+	            	}
+	            	
+	            	tc.sendMessage(str).queue(response -> {
+	            		updateResponse = response;
+	        			File file = new File(BotMusicListener.directoryDefault + "updateMessageId.txt");
+	            		
+	            		try {
+	            			FileWriter fw = new FileWriter(file);
+	            		    fw.write(tc.getId() + "/" + msg.getId() + "/" + response.getId());
+	            		      
+	            		    fw.close();
+	            		} 
+	            		catch (Exception e) {
+	            		    e.printStackTrace();
+	            		    logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+	            		}
+	            		
+		            	if(MusicController.isInTotal == 0)
+		            		MusicController.updateGunBam(tc, response);
+	        		});
+	        		
+            	}
+            	
+            	else {
+            		if(args[1].equals("취소") || args[1].equalsIgnoreCase("cancel")) {
+            			if(allExitAlert != 0) {
+	            			tc.sendMessage("업데이트 예약을 취소했어요").queue(response -> {
+	            				File file = new File(BotMusicListener.directoryDefault + "updateMessageId.txt");
+	    	            		
+	    	            		try {
+	    	            			FileWriter fw = new FileWriter(file);
+	    	            		    fw.write("");
+	    	            		      
+	    	            		    fw.close();
+	    	            		} 
+	    	            		catch (Exception e) {
+	    	            		    e.printStackTrace();
+	    	            		    logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+	    	            		}
+	            			});
+	            			allExitAlert = 0;
+            			}
+            			else
+            				tc.sendMessage("이미 업데이트 예약을 하지 않았어요").queue();
+            		}
+            	}
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("saveDefault")||args[0].equalsIgnoreCase("sd")||args[0].equalsIgnoreCase("ㄴㅇ"))) {
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("saveDefault")||args[0].equalsIgnoreCase("sd")||args[0].equalsIgnoreCase("ㄴㅇ"))) {
             	
             	String vc = "";
                 try{ 
@@ -1581,7 +1671,7 @@ public class BotMusicListener extends ListenerAdapter {
 	
             }
             
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("점검")) {
+            else if(user.getId().equals(admin)&&args[0].equalsIgnoreCase("점검")) {
             	
             	String vc = "";
                 try{ 
@@ -1615,7 +1705,7 @@ public class BotMusicListener extends ListenerAdapter {
 	
             }
  
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("alert")){
+            else if(user.getId().equals(admin)&&args[0].equalsIgnoreCase("alert")){
             	
             	File file = new File(BotMusicListener.directoryDefault + "guild/guildListSave.txt");
             	int coun = 0;
@@ -1690,35 +1780,35 @@ public class BotMusicListener extends ListenerAdapter {
             	count = 0;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("보완")||args[0].equalsIgnoreCase("수정")||args[0].equalsIgnoreCase("fix"))){
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("보완")||args[0].equalsIgnoreCase("수정")||args[0].equalsIgnoreCase("fix"))){
             	tc.sendMessage("수정 중...").queue(response -> {
             		MusicController.fixGuilds(tc, msg, event, response);
             	});
             	
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("clearLog")||args[0].equalsIgnoreCase("로그지우기"))){
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("clearLog")||args[0].equalsIgnoreCase("로그지우기"))){
             	clearLog(tc, event, msg);
             	tc.sendMessage("로그를 클리어했어요").queue();
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("로그켜기"))){
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("로그켜기"))){
             	clearLog(tc, event, msg);
             	tc.sendMessage("로그를 켜요").queue();
             	logOn = 1;
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("로그끄기"))){
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("logOn")||args[0].equalsIgnoreCase("로그끄기"))){
             	clearLog(tc, event, msg);
             	tc.sendMessage("로그를 꺼요").queue();
             	logOn = 0;
             }
         
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("saveGuilds")||args[0].equalsIgnoreCase("길드저장"))) {
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("saveGuilds")||args[0].equalsIgnoreCase("길드저장"))) {
             	MusicController.saveGuilds(tc, event);
             }
             
-            else if(user.toString().contains(admin)&&args[0].equalsIgnoreCase("print")){
+            else if(user.getId().equals(admin)&&args[0].equalsIgnoreCase("print")){
             	MusicController.alert(tc, event);
             }
             
@@ -1728,7 +1818,6 @@ public class BotMusicListener extends ListenerAdapter {
 
             	MusicController.channel(tc, msg, event, language);
             }
-            
             
             else if(args[0].equals(prefix)) {
             	Controller.news(tc, msg, event);
@@ -1746,92 +1835,16 @@ public class BotMusicListener extends ListenerAdapter {
         		MusicController.reset(tc, msg, event);
         		Controller.reset(tc, msg, event);
             }
-            
-            else if(args[0].contains("print")||args[0].contains("guild")||args[0].equalsIgnoreCase("alert")||args[0].equalsIgnoreCase("clear")||args[0].contains("admin")||args[0].contains("logout")||args[0].contains("saveDefault")||args[0].contains("lock")) {
-            	
-            	tc.sendMessage("관리자만 이용 가능한 명령어에요").queue();
-            	System.out.println("BOT: 관리자만 이용 가능한 명령어에요");       	
-            }
-            
-            // user
-            else if(args[0].equalsIgnoreCase("1")||args[0].equalsIgnoreCase("2")||args[0].equalsIgnoreCase("3")||args[0].equalsIgnoreCase("4")||args[0].equalsIgnoreCase("5")||args[0].equalsIgnoreCase("6")||args[0].equalsIgnoreCase("7")) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-            	
-            	Member member = event.getMember();
-            	String language = "kor";
-            	if(msg.getContentRaw().startsWith("$")) language = "eng";
-            	
-		        MusicController.searchAndPlay(tc, msg, args[0], event, member, language);
-		        MusicController.repeat(tc, msg, event);    	
-            }
-            
-            else if(args[0].equalsIgnoreCase("add")||args[0].equalsIgnoreCase("p")||args[0].equalsIgnoreCase("play")||args[0].equalsIgnoreCase("제생")||args[0].equalsIgnoreCase("재생")||args[0].equalsIgnoreCase("ㅔ")||args[0].equalsIgnoreCase("추가")) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-            	
-            	Member member = event.getMember();
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
- 
-            	//AudioSourceManagers.registerRemoteSources(myManager);
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-
-            	if(args.length <= 1) { 
-            			
-                    MusicController.queryNull(tc, msg, event, member, language);
-                        
-                } 
-            	else {
-                	MusicController.loadAndPlay(tc, msg, null, input, event, language, 0);
-                	MusicController.repeat(tc, msg, event);
-                }       	
-            }
-            
-            else if(args[0].equalsIgnoreCase("randomplay")||args[0].equalsIgnoreCase("ranp")||args[0].equalsIgnoreCase("랜덤제생")||args[0].equalsIgnoreCase("랜덤재생")||args[0].equalsIgnoreCase("랜재")||args[0].equalsIgnoreCase("playrandom")||args[0].equalsIgnoreCase("pran")||args[0].equalsIgnoreCase("제생랜덤")||args[0].equalsIgnoreCase("재생랜덤")||args[0].equalsIgnoreCase("재랜")) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-
+           
+            else if(args[0].equalsIgnoreCase("힙")||args[0].equalsIgnoreCase("heap")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	//AudioSourceManagers.registerRemoteSources(myManager);
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-
-            		
-            	if(args.length <= 1) {
-                    MusicController.randomNextTrack(tc, msg, event, language);
-                        
-                } 
-            	else {
-                    if(input.startsWith("https://")) {
-	                	MusicController.loadAndPlayRandom(tc, msg, input, event, language);
-	                	MusicController.repeat(tc, msg, event);
-                    }
-                    	
-                    else {
-                    	String langu = "**재생목록 URL**이 아닌 것 같아요";
-                    	if(language.equals("eng"))
-                    		langu = "I don't think that URL links to a playlist.";
-                    			
-                    	tc.sendMessage(langu).queue();
-                    	log(tc, event, msg, "BOT: " + langu);
-                    }
- 			
-                }       	
-                   
+        		Controller.heap(tc, msg, event, language);
             }
-            
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("주소")||args[0].equalsIgnoreCase("주소받기")||args[0].equalsIgnoreCase("주소정보"))) {
+           
+
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("주소")||args[0].equalsIgnoreCase("주소받기")||args[0].equalsIgnoreCase("주소정보"))) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1853,35 +1866,135 @@ public class BotMusicListener extends ListenerAdapter {
 
             }
             
-            else if(user.toString().contains(admin)&&(args[0].equalsIgnoreCase("test")||args[0].equalsIgnoreCase("테스트"))) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
- 
-            	Member member = event.getMember();
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("apply")||args[0].equalsIgnoreCase("적용"))) {
             	
-            	//AudioSourceManagers.registerRemoteSources(myManager);
-            	VoiceChannel myChannel = member.getVoiceState().getChannel();
-            	if(myChannel == null) {
-            		tc.sendMessage("먼저 음성채널에 들어가세요").queue();
-            		System.out.println("BOT: 먼저 음성채널에 들어가세요");
+                if(args.length > 2) {
+                		
+                    if(args[2].length() != 18) {
+                    	tc.sendMessage("ID가 올바르지 않아요").queue();
+                    	return;
+                    }
+                    	
+                    if(args[1].equals("1")||args[1].equals("2")||args[1].equals("3")||args[1].equals("4")||args[1].equals("5")||args[1].contains("saveQueueAllowGuild")||args[1].contains("loadAllowGuild")||args[1].contains("loadAllowUser")||args[1].contains("muteChannel")||args[1].contains("clearAllowUser"))
+                		Controller.applyDirectly(tc, msg, event, args[1], args[2]);
+                    else {
+                		tc.sendMessage("적용위치```css\n1: saveQueueAllowGuild.txt\n2: loadAllowGuild.txt\n3: loadAllowUser.txt\n4: muteChannels.txt\n5: clearAllowUser.txt```").queue(response -> {
+                			response.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+                			msg.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+                		});
+                	}
+                }
             		
-	        		log(tc, event, msg, "BOT: 먼저 음성채널에 들어가세요");
-	       
+                else if(args.length == 1) {
+                	tc.sendMessage("적용위치```css\n1: saveQueueAllowGuild.txt\n2: loadAllowGuild.txt\n3: loadAllowUser.txt\n4: muteChannels.txt\n5: clearAllowUser.txt```").queue(response -> {
+		            	response.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+		            	msg.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+		            });
+                	
+                }
+                else {
+                	if(args[1].equals("1")||args[1].equals("2")||args[1].equals("3")||args[1].equals("4")||args[1].equals("5")||args[1].contains("saveQueueAllowGuild")||args[1].contains("loadAllowGuild")||args[1].contains("loadAllowUser")||args[1].contains("muteChannel")||args[1].contains("clearAllowUser"))
+                		Controller.apply(tc, msg, event, Integer.parseInt(args[1]));
+                	else {
+	                	tc.sendMessage("적용위치```css\n1: saveQueueAllowGuild.txt\n2: loadAllowGuild.txt\n3: loadAllowUser.txt\n4: muteChannels.txt\n5: clearAllowUser.txt```").queue(response -> {
+		            		response.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+		            		msg.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+		            	});
+                	}
+                	
+                }	
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("discard")||args[0].equalsIgnoreCase("적용취소")||args[0].equalsIgnoreCase("적용해제"))) {
+            	if(args.length < 2) {
+            		tc.sendMessage("적용해제위치```css\n1: saveQueueAllowGuild.txt\n2: loadAllowGuild.txt\n3: loadAllowUser.txt\n4: muteChannels.txt\n5: clearAllowUser.txt```").queue(response -> {
+        				response.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+        				msg.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+        			});
             		return;
             	}
-            		
-                String youtubeSearch = "dynamix faithtival";
-                
-                MusicController.loadAndPlay(tc, msg, null, youtubeSearch, event, "kor", 0);
-                MusicController.repeat(tc, msg, event);
-      
-            }
-            		
+            	
+            	if(args.length > 2) {
+
+                	if(args[2].length() != 18) {
+                		tc.sendMessage("ID가 올바르지 않아요").queue();
+                		return;
+                	}
+                	
+	            	if(args[1].equals("1")||args[1].equals("2")||args[1].equals("3")||args[1].equals("4")||args[1].equals("5")||args[1].contains("saveQueueAllowGuild")||args[1].contains("loadAllowGuild")||args[1].contains("loadAllowUser")||args[1].contains("muteChannel")||args[1].contains("clearAllowUser"))
+	            		Controller.discardDirectly(tc, msg, event, args[1], args[2]);
+	            	else {
+	            		tc.sendMessage("적용해제위치```css\n1: saveQueueAllowGuild.txt\n2: loadAllowGuild.txt\n3: loadAllowUser.txt\n4: muteChannels.txt\n5: clearAllowUser.txt```").queue(response -> {
+	            			response.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+	            			msg.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+	            		});
+	            	}
+            	}
+            	else {
+            		tc.sendMessage("적용해제위치```css\n1: saveQueueAllowGuild.txt\n2: loadAllowGuild.txt\n3: loadAllowUser.txt\n4: muteChannels.txt\n5: clearAllowUser.txt```").queue(response -> {
+            			response.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+            			msg.delete().queueAfter(5000, TimeUnit.MILLISECONDS);
+            		});
+            	}
             
-            else if(args[0].equalsIgnoreCase("검색")||args[0].equalsIgnoreCase("search")) {
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("nicknameSynchronized")||args[0].equalsIgnoreCase("닉네임동기화")||args[0].equalsIgnoreCase("닉네임연동"))) {
+            	if(args.length < 2) {
+            		Controller.showNicknameSynchronized(tc, msg, event);
+            	}
+            	else {
+            		if(args[1].length() != 18 && !args[1].equals("null"))
+            			tc.sendMessage("ID가 올바르지 않아요").queue();
+            		else
+            			Controller.setNicknameSynchronized(tc, msg, event, args[1]);
+            	}
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("showSaveQueueAllowGuild")||args[0].equalsIgnoreCase("다시재생허용길드")||args[0].equalsIgnoreCase("다시재생허용서버")||args[0].equalsIgnoreCase("다시재생허용목록"))) {
+            
+            	Controller.showSaveQueueAllowGuild(tc, msg, event);
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("showLoadAllowUser")||args[0].equalsIgnoreCase("showLoadAllowGuild")||args[0].equalsIgnoreCase("불러오기허용길드")||args[0].equalsIgnoreCase("불러오기허용서버")||args[0].equalsIgnoreCase("불러오기허용유저")||args[0].equalsIgnoreCase("불러오기허용목록"))) {
+                
+            	Controller.showLoadAllow(tc, msg, event);
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("showMuteChannel")||args[0].equalsIgnoreCase("재생불가목록")||args[0].equalsIgnoreCase("재생불가채널")||args[0].equalsIgnoreCase("재생불가채널목록"))) {
+                
+            	Controller.showMuteChannel(tc, msg, event);
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("showClearAllowUser")||args[0].equalsIgnoreCase("지우기허용유저")||args[0].equalsIgnoreCase("clear허용유저")||args[0].equalsIgnoreCase("지우기허용목록")||args[0].equalsIgnoreCase("clear허용목록")||args[0].equalsIgnoreCase("지우기허용유저목록")||args[0].equalsIgnoreCase("clear허용유저목록"))) {
+                
+            	Controller.showClearAllowUser(tc, msg, event);
+            }
+           
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("재시작")||args[0].equalsIgnoreCase("restart"))) {
+                tc.sendMessage(":hourglass_flowing_sand: 봇이 재시작됩니다").queue(response -> {
+                	File file = new File(BotMusicListener.directoryDefault + "restartMessageId.txt");
+            		
+            		try {
+            			FileWriter fw = new FileWriter(file);
+            		    fw.write(tc.getId() + "/" + response.getId());
+            		      
+            		    fw.close();
+            		} 
+            		catch (Exception e) {
+            		    e.printStackTrace();
+            		    logtc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+            		}
+           
+          
+                	event.getJDA().shutdown();
+                	
+                	MusicController.musicManagers.clear();
+                	Main.start();
+                });
+            }
+           
+            else if(args[0].equalsIgnoreCase("ㄴㄴ")||args[0].equalsIgnoreCase("취소")||args[0].equalsIgnoreCase("되돌리기")||args[0].equalsIgnoreCase("cancel")||args[0].equalsIgnoreCase("return")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -1890,37 +2003,45 @@ public class BotMusicListener extends ListenerAdapter {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
-
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            	if(args.length <= 1) {
-            			
-            		MusicController.queryNullSearch(tc, msg, event, language);
-            			
-                } 
-            		
-            	else {
-            		String query = "ytsearch:" + input;
-            			
-            		EmbedBuilder eb = new EmbedBuilder();
-        			eb.setColor(Color.decode(colorDefault));
-        				
-        			String langu = ":mag: `" + query.substring(queryCount) + "` 검색 중...";
-                	if(language.equals("eng"))
-                		langu = ":mag: Searching `" + query.substring(queryCount) + "`...";
-                		
-        			eb.setTitle(langu);
-        				
-        			String langua = language;
-        				
-                    tc.sendMessage(eb.build()).queue(response -> {
-        		        	
-                    	MusicController.search(tc, msg, query, event, response, langua);
-        		    });
-                    	
-                 }
-                    	
+            	
+            	MusicController.cancel(tc, msg, event, language);
             }
-  
+            
+            else if(args[0].contains("print")||args[0].contains("guild")||args[0].equalsIgnoreCase("alert")||args[0].contains("saveDefault")||args[0].contains("lock")) {
+            	tc.sendMessage("관리자만 이용 가능한 명령어에요").queue();
+            	System.out.println("BOT: 관리자만 이용 가능한 명령어에요");       	
+            }
+            
+            else if(args[0].equalsIgnoreCase("clear")||args[0].equalsIgnoreCase("ㅊ")) {
+            	tc.sendMessage("허용된 사람만 이용 가능한 명령어에요").queue();
+            	System.out.println("BOT: 허용된 사람만 이용 가능한 명령어에요");
+            }
+           
+           	//check mute channel
+            if(Main.muteChannels.contains(tc.getId())) return;
+            
+            String lowerArgs0 = args[0].toLowerCase();
+           
+            if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("guilds")||args[0].equalsIgnoreCase("g")||args[0].equalsIgnoreCase("ㅎ"))){
+             	MusicController.guilds(tc, msg, event);
+             }
+        	 
+            // user
+            else if(args[0].equalsIgnoreCase("1")||args[0].equalsIgnoreCase("2")||args[0].equalsIgnoreCase("3")||args[0].equalsIgnoreCase("4")||args[0].equalsIgnoreCase("5")||args[0].equalsIgnoreCase("6")||args[0].equalsIgnoreCase("7")) {
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+            	
+            	Member member = event.getMember();
+            	String language = "kor";
+            	if(msg.getContentRaw().startsWith("$")) language = "eng";
+            	
+		        MusicController.searchAndPlay(tc, msg, args[0], event, member, language);
+		        MusicController.repeat(tc, msg, event);    	
+            }
+
             else if(args[0].equalsIgnoreCase("ㅔㅔ")||args[0].equalsIgnoreCase("일시정지")||args[0].equalsIgnoreCase("정지")||args[0].equalsIgnoreCase("pause")||args[0].equalsIgnoreCase("pp")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
@@ -1936,228 +2057,98 @@ public class BotMusicListener extends ListenerAdapter {
             	MusicController.pause(tc, event, member, language, 1);
             }
             
-            else if(args[0].equalsIgnoreCase("이동")||args[0].equalsIgnoreCase("옮기기")||args[0].equalsIgnoreCase("move")||args[0].equalsIgnoreCase("mv")) {
-            	
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-
-            	if(args.length <= 1||input.length() != 18) {
-            		
-            		String langu = "올바른 id를 입력해주세요";
-            		if(language.equals("eng"))
-            			langu = "Please input a valid id.";
-            		
-                    tc.sendMessage(langu).queue();
-                    System.out.println("BOT: " + langu);
-                    
-	        		log(tc, event, msg, "BOT: " + langu);
-	        		return;
-                }
-            	
-            	String id = input.replaceAll(" ", "");
-            	Guild guild = tc.getGuild();
-            	
-        		try {
-        			Member member = event.getGuild().getMemberById(bot);
-        			VoiceChannel myChannel = guild.getVoiceChannelById(id);  
-        			String inChannel = member.getVoiceState().getChannel().getName();
-        			
-	        		if(myChannel.getName().contentEquals(inChannel)) {
-	        			String langu = "이미 **" + myChannel.getName() + "** 에 있어요 (" + (int)(myChannel.getMembers().size()-1) + "명)";
-	            		if(language.equals("eng"))
-	            			langu = "Already joined **" + myChannel.getName() + "**. (" + (int)(myChannel.getMembers().size()-1) + "people)";
-	            		
-	        			tc.sendMessage(langu).queue();
-	        			log(tc, event, msg, "BOT: " + langu);
-	        		}
-	        		else {
-	   
-	        			guild.getAudioManager().openAudioConnection(myChannel);
-	    
-	        		    
-	        			String langu = "**" + myChannel.getName() + "** 로 이동했어요  (" + (int)(myChannel.getMembers().size()) + "명)";
-	            		if(language.equals("eng"))
-	            			langu = "Joined to **" + myChannel.getName() + "**.  (" + (int)(myChannel.getMembers().size()) + "people)";
-	            		
-	        			tc.sendMessage(langu).queue();
-	        			log(tc, event, msg, "BOT: " + langu);
-	        		}
-
-        		}
-        		catch(Exception e) {	
-        			tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-        			log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
-
-        		}
-            }
-  
-            else if(args[0].equalsIgnoreCase("cpu")||args[0].equalsIgnoreCase("사용량")||args[0].equalsIgnoreCase("spec")||args[0].equalsIgnoreCase("스펙")||args[0].equalsIgnoreCase("사양")||args[0].equalsIgnoreCase("성능")||args[0].equalsIgnoreCase("컴퓨터")) {
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-            	Controller.useCpu(tc, msg, event, language);
-
-            }
-       
-            else if(args[0].equalsIgnoreCase("리스트")||args[0].equalsIgnoreCase("재생목록")||args[0].equalsIgnoreCase("목록")||args[0].equalsIgnoreCase("ㅂ")||args[0].equalsIgnoreCase("큐")||args[0].equalsIgnoreCase("q")||args[0].equalsIgnoreCase("queue")||args[0].equalsIgnoreCase("list")||args[0].equalsIgnoreCase("playlist")) {
+            else if(args[0].equalsIgnoreCase("틀어")||args[0].equalsIgnoreCase("재개")||args[0].equalsIgnoreCase("resume")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
             		return;
             	}
             	
+            	Member member = event.getMember();
+            	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
-            	if(args.length <= 1) {
-            		input = "1";
+            	MusicController.resume(tc, event, member, language, 1);
+            }
+            
+            else if(lowerArgs0.startsWith("리스트")||lowerArgs0.startsWith("재생목록")||lowerArgs0.startsWith("목록")||lowerArgs0.startsWith("ㅂ")||lowerArgs0.startsWith("큐")||lowerArgs0.startsWith("q")||lowerArgs0.startsWith("queue")||lowerArgs0.startsWith("list")||lowerArgs0.startsWith("playlist")) {
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+
+            	int fn = 0;
+            	 
+            	String language = "kor";
+            	if(getType(args[0]) == true) language = "eng";
+            	
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("리스트")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            else if(lowerArgs0.startsWith("재생목록") || lowerArgs0.startsWith("list")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("목록")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            else if(lowerArgs0.startsWith("queue")) {
+	            	if(lowerArgs0.length() > 5)
+	            		substring = 5;
+	            }
+	            else if(lowerArgs0.startsWith("ㅂ") || lowerArgs0.startsWith("q") || lowerArgs0.startsWith("큐")) {
+	            	if(lowerArgs0.length() > 1)
+	            		substring = 1;
+	            }
+	            else if(lowerArgs0.startsWith("playlist")) {
+	            	if(lowerArgs0.length() > 8)
+	            		substring = 8;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	soWhich = getMistake;
+	            	
+	            }
+	            else {
+		            //original
+	            	if(args[0].equalsIgnoreCase("리스트")||args[0].equalsIgnoreCase("재생목록")||args[0].equalsIgnoreCase("목록")||args[0].equalsIgnoreCase("ㅂ")||args[0].equalsIgnoreCase("큐")||args[0].equalsIgnoreCase("q")||args[0].equalsIgnoreCase("queue")||args[0].equalsIgnoreCase("list")||args[0].equalsIgnoreCase("playlist")) {
+	            
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
+		            	if(args.length <= 1) {
+		            		input = "1";
+		            		fn = 2;
+		                }
+		            	
+		            	soWhich = input;
+	            	}
+	            }
+	            
+	            if(!func.isNumber(soWhich)) {
+	            	soWhich = "1";
             		fn = 2;
-                }
-            	String in = input;
+	            }
+	            
+	            MusicController.nowplay(tc, msg, event, Integer.parseInt(soWhich), fn, language);
 
-            	MusicController.nowplay(tc, msg, event, Integer.parseInt(in), fn, language);
-
-            	page = Integer.parseInt(input);
-            	fn = 0;
- 	
             }
-            
-            else if(args[0].equalsIgnoreCase("넘기기")||args[0].equalsIgnoreCase("스킵")||args[0].equalsIgnoreCase("건너뛰기")||args[0].equalsIgnoreCase("ㄴ")||args[0].equalsIgnoreCase("skip")||args[0].equalsIgnoreCase("s")||args[0].equalsIgnoreCase("jump")) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-            	
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
-            	if(args.length <= 1) {
-            		input = "0";
-            	}
-            	
-            	MusicController.skipTrack(tc, msg, event, Integer.parseInt(input), language);
-            	
-            }
-            
-            else if(args[0].equalsIgnoreCase("재거")||args[0].equalsIgnoreCase("제거")||args[0].equalsIgnoreCase("삭제")||args[0].equalsIgnoreCase("remove")) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
 
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-            	if(args.length <= 1) {
-            		String langu = "삭제할 항목 번호가 있어야해요";
-            		if(language.equals("eng")) langu = "Must have item number.";
-            		
-            		tc.sendMessage(langu).queue();
-            		System.out.println("BOT: " + langu);
-            		
-	        		log(tc, event, msg, "BOT: " + langu);
-
-            	}
-            	else {
-            		if(args.length > 2) {
-            			String languag = language;
-            			Runnable re = () -> {
-	            			List<Integer> items = new ArrayList<>();
-	            			
-	            			for(int i = 1; i<args.length; i++) { 
-	            				
-	            				if(args[i].contains("~")||args[i].contains("-")) {
-	            						
-	            					int x = 0, y = 0;
-	            						    
-	            						
-	            					if(args[i].contains("~"))
-	            						args[i] = args[i].replaceAll(" ", "").replaceAll("^~, [^0-9]", "");
-	            					else 
-	            						args[i] = args[i].replaceAll(" ", "").replaceAll("^-, [^0-9]", "");
-	            								
-	            					try {
-	            						String[] spli = null;
-	            						if(args[i].contains("~"))
-	            							spli = args[i].split("~");
-	            						if(args[i].contains("-"))
-	            							spli = args[i].split("-");
-	            									
-	            						if(args[i].contains("~")||args[i].contains("-")) {
-	            									
-	            							x = Integer.parseInt(spli[0]);
-	            							y = Integer.parseInt(spli[1]);
-	            							
-	            							int z = 0;
-	            							
-	            							if(x > y) {
-	            								z = x;
-	            								x = y;
-	            								y = z;
-	            							}
-	            						}
-	
-	            									
-	            					}
-	            					catch(Exception e) {
-	            						tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-	            					   	log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
-	            					   	return;
-	            					}
-	            						
-	            					for(int j = x; j<=y; j++) {
-	            						if(items.contains(j)) {}
-	            						else items.add(j);
-	            					}
-	            						
-	            				}
-	            				else {
-	            					if(func.isNumber(args[i])) {
-	            						if(items.contains(Integer.parseInt(args[i]))) {}
-	            						else
-	            							items.add(Integer.parseInt(args[i]));
-	            					}
-	            				}
-	            				
-	            			}
-	    
-	            			Collections.sort(items);
-	            			
-	            			MusicController.removeManyTrack(items, tc, event, languag);
-	            			items.clear();
-            			};
-            			Thread tr = new Thread(re);
-            			tr.start();
-            		}
-            		
-            		else if(args[1].contains("~")||args[1].contains("-")) MusicController.removeTrack(args[1], tc, event, 1, language, 1);
-            		else {
-            			if(func.isNumber(args[1])) 
-            				MusicController.removeTrack(args[1], tc, event, 0, language, 0);
-            			else {
-            				
-            				String langu = "번호만 입력하세요";
-                    		if(language.equals("eng")) langu = "Please input number only.";
-                    		
-            				tc.sendMessage(langu).queue();
-            				log(tc, event, msg, "BOT: " + langu);
-            			}
-            		}
-            	}
-            }
-            
             else if(args[0].equalsIgnoreCase("다시재생")||args[0].equalsIgnoreCase("playagain")) {
             	
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	if(guild1.getId().equals(born)) {
+            	
+            	if(Main.saveQueueAllowGuild.contains(guild1.getId())) {
 	            	MusicController.checkLock(tc, user, event);
 	            	if(ret == 1) {
 	            		ret = 0;
@@ -2193,78 +2184,78 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             }
             
-            else if(args[0].equalsIgnoreCase("불러오기")||args[0].equalsIgnoreCase("load")) {
-            	
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-            	if(guild1.getId().equals(born)||guild1.getId().equals(base)) {
-	            	MusicController.checkLock(tc, user, event);
-	            	if(ret == 1) {
-	            		ret = 0;
-	            		return;
-	            	}
-
-	            	Member member = event.getMember();
+            else if(lowerArgs0.startsWith("randomplay")||lowerArgs0.startsWith("ranp")||lowerArgs0.startsWith("랜덤제생")||lowerArgs0.startsWith("랜덤재생")||lowerArgs0.startsWith("랜재")||lowerArgs0.startsWith("playrandom")||lowerArgs0.startsWith("pran")||lowerArgs0.startsWith("제생랜덤")||lowerArgs0.startsWith("재생랜덤")||lowerArgs0.startsWith("재랜")) {
+	            MusicController.checkLock(tc, user, event);
+	        	if(ret == 1) {
+	        		ret = 0;
+	        		return;
+	        	}
 	
-	            	VoiceChannel myChannel = member.getVoiceState().getChannel();
-	            	if(myChannel == null) {
-	            		String langu = "먼저 음성채널에 들어가세요";
-                		if(language.equals("eng")) langu = "Join the voice channel first.";
-                		
-	            		tc.sendMessage(langu).queue();
-	            		System.out.println("BOT: " + langu);
-	            		
-		        		log(tc, event, msg, "BOT: " + langu);
-	            		return;
-	            	}
+	        	String language = "kor";
+	        	if(getType(lowerArgs0) == true) language = "eng";
+	        	
+	        	String soWhich = "";
+	        	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+	        	
+	        	int substring = 0;
+	        	
+	            if(lowerArgs0.startsWith("randomplay") || lowerArgs0.startsWith("playrandom")) {
+	            	if(lowerArgs0.length() > 10)
+	            		substring = 10;
+	            }
+	            else if(lowerArgs0.startsWith("ranp") || lowerArgs0.startsWith("랜덤재생") || lowerArgs0.startsWith("랜덤제생") || lowerArgs0.startsWith("pran") || lowerArgs0.startsWith("제생랜덤") || lowerArgs0.startsWith("재생랜덤")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("랜재") || lowerArgs0.startsWith("재랜")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
 	            	
-	            	String id = member.getId();
+	            	soWhich = getMistake;
 	            	
-	            	if(args.length > 1) {
-	            		if(args[1].length() == 18) {
-	            			id = args[1];
-	            			
-	            			try {
-	            				event.getJDA().getUserById(id);
-	            				MusicController.repeat(tc, msg, event);
-	    			            MusicController.playAgain(tc, msg, member, event, id, 1, language);
-	            			}
-	            			catch(Exception e) {
-	
-	            				tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
-	            				log(tc, event, msg, "BOT: :no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
-	            			}
-	            		}
-	            		
-	            		else {
-	            			String langu = "올바른 ID를 입력해 주세요";
-                    		if(language.equals("eng")) langu = "Please input a valid id.";
-                    		
-            				tc.sendMessage(langu).queue();
-            				log(tc, event, msg, "BOT: " + langu);
-            				
-            				return;
-	            		}
-	            	}
-	            	else {
-		            	MusicController.repeat(tc, msg, event);
-			            MusicController.playAgain(tc, msg, member, event, id, 1, language);
-	            	}
-            	}
-            	
-            	else {
-            		String langu = "여기서는 쓸 수 없는 기능이에요";
-            		if(language.equals("eng")) langu = "Can't use it in this server.";
-            		
-            		tc.sendMessage(langu).queue();
-            		System.out.println("BOT: " + langu);
-            		
-	        		log(tc, event, msg, "BOT: " + langu);
-            	}
+	            }
+	            else {
+		            //original
+		            if(args[0].equalsIgnoreCase("randomplay")||args[0].equalsIgnoreCase("ranp")||args[0].equalsIgnoreCase("랜덤제생")||args[0].equalsIgnoreCase("랜덤재생")||args[0].equalsIgnoreCase("랜재")||args[0].equalsIgnoreCase("playrandom")||args[0].equalsIgnoreCase("pran")||args[0].equalsIgnoreCase("제생랜덤")||args[0].equalsIgnoreCase("재생랜덤")||args[0].equalsIgnoreCase("재랜")) {
+	            	
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		
+		            		
+		            	if(args.length <= 1) {
+		                    MusicController.randomNextTrack(tc, msg, event, language);
+		                        
+		                } 
+		            	else {
+		            		soWhich = input;
+		            	}
+		            }
+	            }
+	            
+	            if(soWhich.startsWith("https://")) {
+                	MusicController.loadAndPlayRandom(tc, msg, soWhich, event, language);
+                	MusicController.repeat(tc, msg, event);
+                }
+                	
+                else {
+                	if(!soWhich.equals("")) {
+	                	String langu = "**재생목록 URL**이 아닌 것 같아요";
+	                	if(language.equals("eng"))
+	                		langu = "I don't think that URL links to a playlist.";
+	                			
+	                	tc.sendMessage(langu).queue();
+	                	log(tc, event, msg, "BOT: " + langu);
+                	}
+                }
+			   
             }
-
-            else if(args[0].equalsIgnoreCase("틀어")||args[0].equalsIgnoreCase("재개")||args[0].equalsIgnoreCase("resume")) {
+            
+            else if(lowerArgs0.startsWith("add")||lowerArgs0.startsWith("p")||lowerArgs0.startsWith("play")||lowerArgs0.startsWith("제생")||lowerArgs0.startsWith("재생")||lowerArgs0.startsWith("ㅔ")||lowerArgs0.startsWith("추가")) {
+            	
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2272,13 +2263,526 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	Member member = event.getMember();
+            	String language = "kor";
+            	if(getType(lowerArgs0) == true) language = "eng";
+ 
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
             	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("add")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            else if(lowerArgs0.startsWith("play")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("p") || lowerArgs0.startsWith("ㅔ")) {
+	            	if(lowerArgs0.length() > 1)
+	            		substring = 1;
+	            }
+	            else if(lowerArgs0.startsWith("제생") || lowerArgs0.startsWith("재생") || lowerArgs0.startsWith("추가")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	           
+            	if(substring != 0) {
+            		if(substring == 1 && lowerArgs0.startsWith("p")) return;
+            		
+            		getMistake = getMistake.substring(substring);
+            		
+            		soWhich = getMistake;
+            		
+            	}
+            	else {
+            		//original
+	            	if(args[0].equalsIgnoreCase("add")||args[0].equalsIgnoreCase("p")||args[0].equalsIgnoreCase("play")||args[0].equalsIgnoreCase("제생")||args[0].equalsIgnoreCase("재생")||args[0].equalsIgnoreCase("ㅔ")||args[0].equalsIgnoreCase("추가")) {
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		
+		            	if(args.length <= 1) { 
+		            			
+		                    MusicController.queryNull(tc, msg, event, member, language);
+		                    return;
+		                } 
+		            	
+		            	soWhich = input;
+		                
+		            }
+            	}
+            	
+            	MusicController.loadAndPlay(tc, msg, null, soWhich, event, event.getMember(), language, 0);
+            	MusicController.repeat(tc, msg, event);
+            }
+            
+            else if(user.getId().equals(admin)&&(args[0].equalsIgnoreCase("test")||args[0].equalsIgnoreCase("테스트"))) {
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+ 
+            	Member member = event.getMember();
+            	
+            	VoiceChannel myChannel = member.getVoiceState().getChannel();
+            	if(myChannel == null) {
+            		tc.sendMessage("먼저 음성채널에 들어가세요").queue();
+            		System.out.println("BOT: 먼저 음성채널에 들어가세요");
+            		
+	        		log(tc, event, msg, "BOT: 먼저 음성채널에 들어가세요");
+	       
+            		return;
+            	}
+            		
+                String youtubeSearch = "https://www.youtube.com/watch?v=8JmaQsiYn3o";
+                
+                MusicController.loadAndPlay(tc, msg, null, youtubeSearch, event, event.getMember(), "kor", 0);
+                MusicController.repeat(tc, msg, event);
+      
+            }
+            
+            else if(lowerArgs0.startsWith("검색")||lowerArgs0.startsWith("search")) {
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+            	
+            	String language = "kor";
+            	if(getType(lowerArgs0) == true) language = "eng";
+            	
+        		if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+        			String str = "링크 첨부";
+        			if(language.equals("eng"))
+        				str = "MESSAGE_EMBED_LINKS";
+        			
+        			tc.sendMessage(func.askPermission(str, language)).queue();
+        			log(tc, event, msg, "BOT: " + str);
+    	        	return;
+    	        }
+        		
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("검색")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            else if(lowerArgs0.startsWith("search")) {
+	            	if(lowerArgs0.length() > 6)
+	            		substring = 6;
+	            }
+	           
+            	if(substring != 0) {
+            		getMistake = getMistake.substring(substring);
+            		
+            		soWhich = getMistake;
+            		
+            	}
+            	else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("검색")||args[0].equalsIgnoreCase("search")) {
+	            	
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		            	if(args.length <= 1) {
+		            		MusicController.queryNullSearch(tc, msg, event, language);
+		            		return;
+		                } 
+		            	else {
+		            		soWhich = input;
+		            	}
+	            	}
+            	}
+            	
+            	EmbedBuilder eb = new EmbedBuilder();
+        		eb.setColor(Color.decode(colorDefault));
+        				
+        		String langu = ":mag: `" + soWhich + "` 검색 중...";
+                if(language.equals("eng"))
+                	langu = ":mag: Searching `" + soWhich + "`...";
+                	
+        		eb.setTitle(langu);
+        			
+        		String langua = language;
+        		String soWhic = soWhich;
+                tc.sendMessage(eb.build()).queue(response -> {
+        		       	
+                   	MusicController.search(tc, msg, soWhic, event, response, langua);
+        		});
+                	
+            }
+  
+            else if(lowerArgs0.startsWith("입장")||lowerArgs0.startsWith("이동")||lowerArgs0.startsWith("옮기기")||lowerArgs0.startsWith("들어가기")||lowerArgs0.startsWith("move")||lowerArgs0.startsWith("mv")||lowerArgs0.startsWith("enter")) {
+            
+            	String language = "kor";
+            	if(getType(lowerArgs0) == true) language = "eng";
+
+            	Guild guild = tc.getGuild();
+            	
+            	MusicController.repeat(tc,  msg,  event);
+            	MusicController.moveVoiceChannel(tc, msg, event, guild, args, language);
+            }
+  
+            else if(args[0].equalsIgnoreCase("cpu")||args[0].equalsIgnoreCase("사용량")||args[0].equalsIgnoreCase("spec")||args[0].equalsIgnoreCase("스펙")||args[0].equalsIgnoreCase("사양")||args[0].equalsIgnoreCase("성능")||args[0].equalsIgnoreCase("컴퓨터")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	MusicController.resume(tc, event, member, language, 1);}
+            	Controller.useCpu(tc, msg, event, language);
+
+            }
             
-            else if(args[0].equalsIgnoreCase("종료")||args[0].equalsIgnoreCase("마지막")||args[0].equalsIgnoreCase("last")) {
+            else if(args[0].equalsIgnoreCase("stop")||args[0].equalsIgnoreCase("멈춤")||args[0].equalsIgnoreCase("중지")||args[0].equalsIgnoreCase("나가게")||args[0].equalsIgnoreCase("낙가ㅣ")||args[0].equalsIgnoreCase("나각기")||args[0].equalsIgnoreCase("나가ㅣ")||args[0].equalsIgnoreCase("나가기")||args[0].equalsIgnoreCase("exit")||args[0].equalsIgnoreCase("out")||args[0].equalsIgnoreCase("leave")||args[0].equalsIgnoreCase("disconnect")||args[0].equalsIgnoreCase("dc")){
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+            	
+            	Guild guild = event.getGuild();
+                AudioManager manager = guild.getAudioManager();
+                
+                String language = "kor";
+            	if(getType(args[0]) == true) language = "eng";
+            	
+            	if(Main.saveQueueAllowGuild.contains(tc.getGuild().getId())) {
+                	 MusicController.stopPlaying(tc, msg, event, 0, 2, language);
+                }
+                else {
+                	MusicController.stopPlaying(tc, msg, event, 0, 0, language);
+                }
+                
+	            manager.closeAudioConnection();
+	
+            }
+            
+            else if(args[0].equalsIgnoreCase("outNotSave")||args[0].equalsIgnoreCase("exitNotSave")){
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+            	Guild guild = event.getGuild();
+                AudioManager manager = guild.getAudioManager();
+                
+              
+                MusicController.stopPlaying(tc, msg, event, 0, 0, "kor");
+	            manager.closeAudioConnection();
+ 
+            }
+            
+            else if(lowerArgs0.startsWith("넘기기")||lowerArgs0.startsWith("스킵")||lowerArgs0.startsWith("건너뛰기")||lowerArgs0.startsWith("ㄴ")||lowerArgs0.startsWith("skip")||lowerArgs0.startsWith("s")||lowerArgs0.startsWith("jump")) {
+            	if(lowerArgs0.startsWith("ㄴㄴ")) return;
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+            	
+            	String language = "kor";
+            	if(getType(lowerArgs0) == true) language = "eng";
+            	
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("넘기기")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            else if(lowerArgs0.startsWith("skip") || lowerArgs0.startsWith("jump") || lowerArgs0.startsWith("건너뛰기")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("스킵")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            else if(lowerArgs0.startsWith("ㄴ") || lowerArgs0.startsWith("s")) {
+	            	if(lowerArgs0.length() > 1)
+	            		substring = 1;
+	            }
+	           
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	
+	            	soWhich = getMistake;
+	            }
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("넘기기")||args[0].equalsIgnoreCase("스킵")||args[0].equalsIgnoreCase("건너뛰기")||args[0].equalsIgnoreCase("ㄴ")||args[0].equalsIgnoreCase("skip")||args[0].equalsIgnoreCase("s")||args[0].equalsIgnoreCase("jump")) {
+	            	
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
+		            	if(args.length <= 1) {
+		            		input = "0";
+		            	}
+		            	
+		            	soWhich = input;
+	            	}
+	            }
+	            
+	            if(func.isNumber(soWhich))
+	            	MusicController.skipTrack(tc, msg, event, Integer.parseInt(soWhich), language);
+	            
+            }
+            
+            else if(lowerArgs0.startsWith("재거")||lowerArgs0.startsWith("제거")||lowerArgs0.startsWith("삭제")||lowerArgs0.startsWith("remove")) {
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+            	
+            	String language = "kor";
+            	if(getType(lowerArgs0) == true) language = "eng";
+            	
+            	if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+            		String str = "링크 첨부";
+        			if(language.equals("eng"))
+        				str = "MESSAGE_EMBED_LINKS";
+        			
+        			tc.sendMessage(func.askPermission(str, language)).queue();
+        			log(tc, event, msg, "BOT: " + str);
+    	        	return;
+    	        }
+            	
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("재거") || lowerArgs0.startsWith("제거") || lowerArgs0.startsWith("삭제")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            else if(lowerArgs0.startsWith("remove")) {
+	            	if(lowerArgs0.length() > 6)
+	            		substring = 6;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	
+	            	soWhich = getMistake;
+	            	
+	            }
+	            else {
+		            //original
+	            	if(args[0].equalsIgnoreCase("재거")||args[0].equalsIgnoreCase("제거")||args[0].equalsIgnoreCase("삭제")||args[0].equalsIgnoreCase("remove")) {
+	            	
+		            	if(args.length <= 1) {
+		            		String langu = "삭제할 항목 번호가 있어야해요";
+		            		if(language.equals("eng")) langu = "Must have item number.";
+		            		
+		            		tc.sendMessage(langu).queue();
+		            		System.out.println("BOT: " + langu);
+		            		
+			        		log(tc, event, msg, "BOT: " + langu);
+			        		return;
+		            	}
+		            	
+		            	if(args.length >= 2) {
+		            		String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+		            		soWhich = input;
+		            	}
+	            	}
+	            }
+	            
+	            List<String> inputs = new ArrayList<>();
+    			
+    			boolean onlyNumber = true;
+    			
+    			String[] split = null;
+    			
+    			String checkOnlyNumber = soWhich.replaceAll(",", "").replaceAll(" ", "").replaceAll("-", "").replaceAll("~", "");
+    			
+    			if(soWhich.contains(",")) {
+    				soWhich = soWhich.replaceAll(" ", "");
+    				split = soWhich.split(",");
+    			}
+    			else
+    				split = soWhich.split(" ");
+    			
+    			if(!func.isNumber(checkOnlyNumber))
+    				onlyNumber = false;
+    			
+    			for(int i = 0; i<split.length; i++) { 
+    				inputs.add(split[i]);
+    			}
+    			
+    			if(onlyNumber == false) {
+    				MusicController.removeTrackTitle(inputs, tc, msg, event, language);
+        			
+    				return;
+    			}
+    			
+    			String languag = language;
+    			String[] spli = split;
+    			Runnable re = () -> {
+        			List<Integer> items = new ArrayList<>();
+        			
+        			for(int i = 0; i<spli.length; i++) { 
+        				
+        				if(spli[i].contains("~")||spli[i].contains("-")) {
+        						
+        					int x = 0, y = 0;
+        						    
+        						
+        					if(spli[i].contains("~"))
+        						spli[i] = spli[i].replaceAll(" ", "").replaceAll("^~, [^0-9]", "");
+        					else 
+        						spli[i] = spli[i].replaceAll(" ", "").replaceAll("^-, [^0-9]", "");
+        								
+        					try {
+        						String[] divide = null;
+        						if(spli[i].contains("~"))
+        							divide = spli[i].split("~");
+        						if(spli[i].contains("-"))
+        							divide = spli[i].split("-");
+        									
+        						if(spli[i].contains("~")||spli[i].contains("-")) {
+        									
+        							x = Integer.parseInt(divide[0]);
+        							y = Integer.parseInt(divide[1]);
+        							
+        							int z = 0;
+        							
+        							if(x > y) {
+        								z = x;
+        								x = y;
+        								y = z;
+        							}
+        						}
+		
+        					}
+        					catch(Exception e) {
+        						tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+        					   	log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
+        					   	return;
+        					}
+        						
+        					for(int j = x; j<=y; j++) {
+        						if(items.contains(j)) {}
+        						else items.add(j);
+        					}
+        						
+        				}
+        				else {
+        					if(func.isNumber(spli[i])) {
+        						if(items.contains(Integer.parseInt(spli[i]))) {}
+        						else
+        							items.add(Integer.parseInt(spli[i]));
+        					}
+        				}
+        				
+        			}
+
+        			Collections.sort(items);
+        			
+        			MusicController.removeManyTrack(items, tc, msg, event, languag);
+        			items.clear();
+    			};
+    			Thread tr = new Thread(re);
+    			tr.start();
+            }
+            
+            else if(lowerArgs0.startsWith("불러오기")||lowerArgs0.startsWith("load")) {
+            	MusicController.checkLock(tc, user, event);
+            	if(ret == 1) {
+            		ret = 0;
+            		return;
+            	}
+
+            	
+            	String language = "kor";
+            	if(getType(lowerArgs0) == true) language = "eng";
+     
+
+            	Member member = event.getMember();
+
+        		if(!Main.loadAllowGuild.contains(guild1.getId())&&!Main.loadAllowUser.contains(user.getId())) {
+        			String langu = "여기서는 쓸 수 없는 기능이에요";
+        			if(language.equals("eng")) 
+        				langu = "Can't use it in this server.";
+            		
+            		tc.sendMessage(langu).queue();
+            		System.out.println("BOT: " + langu);
+            		
+            		log(tc, event, msg, "BOT: " + langu);
+            		
+            		return;
+        		}
+            	
+            	VoiceChannel myChannel = member.getVoiceState().getChannel();
+            	if(myChannel == null) {
+            		String langu = "먼저 음성채널에 들어가세요";
+            		if(language.equals("eng")) langu = "Join the voice channel first.";
+            		
+            		tc.sendMessage(langu).queue();
+            		System.out.println("BOT: " + langu);
+            		
+	        		log(tc, event, msg, "BOT: " + langu);
+            		return;
+            	}
+            	
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("불러오기") || lowerArgs0.startsWith("load")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	
+	            	soWhich = getMistake;
+	            	
+		        }
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("불러오기")||args[0].equalsIgnoreCase("load")) {
+	            		
+	            		String id = member.getId();
+	            		
+			            if(args.length > 1) {
+			            	soWhich = args[1];
+			            }
+			            else
+			            	soWhich = id;
+	            		
+	            	}
+		            		
+            	}
+	            
+	            if(soWhich.length() == 18) {
+        			try {
+        				event.getJDA().getUserById(soWhich);
+        				MusicController.repeat(tc, msg, event);
+			            MusicController.playAgain(tc, msg, member, event, soWhich, 1, language);
+        			}
+        			catch(Exception e) {
+
+        				tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
+        				log(tc, event, msg, "BOT: :no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
+        			}
+        		}
+        		else {
+        			String langu = "올바른 ID를 입력해 주세요";
+            		if(language.equals("eng")) langu = "Please input a valid id.";
+            		
+    				tc.sendMessage(langu).queue();
+    				log(tc, event, msg, "BOT: " + langu);
+        		}
+    	
+            }
+
+            else if(lowerArgs0.startsWith("종료")||lowerArgs0.startsWith("마지막")||lowerArgs0.startsWith("last")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2286,30 +2790,61 @@ public class BotMusicListener extends ListenerAdapter {
             	}
     
             	int isLast = 0;
+            	int last = -1;
             	
             	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
+            	if(getType(lowerArgs0) == true) language = "eng";
             	
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
             	
-            	if(args.length <= 1) {
-            		isLast = 1;
-            		last = -1;
-            	}
+            	int substring = 0;
             	
-            	else if(args[1].equals("0")||input.contains("취소")||input.contains("제거")||input.contains("cancel")||input.contains("remove")||input.contains("disable")) {
+	            if(lowerArgs0.startsWith("종료")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            else if(lowerArgs0.startsWith("마지막")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            else if(lowerArgs0.startsWith("last")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	soWhich = getMistake;
+	            	
+	            }
+	            
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("종료")||args[0].equalsIgnoreCase("마지막")||args[0].equalsIgnoreCase("last")) {
+	            	
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
+		            	soWhich = input;
+		            	
+		            	if(args.length <= 1) {
+		            		isLast = 1;
+		            	}
+	            	}
+	            }
+
+            	if(soWhich.equals("0")||soWhich.contains("취소")||soWhich.contains("제거")||soWhich.contains("cancel")||soWhich.contains("remove")||soWhich.contains("disable")) {
             		isLast = 0;
             	}
             	
-            	else if(input.contains("목록")||input.contains("큐")||input.contains("재생목록")||input.contains("q")||input.contains("ㅂ")||input.contains("queue")||input.contains("list")||input.contains("playlist")) {
+            	else if(soWhich.contains("목록")||soWhich.contains("큐")||soWhich.contains("재생목록")||soWhich.contains("q")||soWhich.contains("ㅂ")||soWhich.contains("queue")||soWhich.contains("list")||soWhich.contains("playlist")) {
             		isLast = 1;
             		last = -2;
             	}
             	
             	else {
-            		if(func.isNumber(input)) {
+            		if(func.isNumber(soWhich)) {
             			isLast = 1;
-            			last = Integer.parseInt(input);
+            			last = Integer.parseInt(soWhich);
             		
             			if(last <= -3) last = -2;
             		}
@@ -2347,11 +2882,39 @@ public class BotMusicListener extends ListenerAdapter {
    
             }
             
-            else if(args[0].equalsIgnoreCase("help")||args[0].equalsIgnoreCase("guide") || msg.getContentRaw().equalsIgnoreCase("사용법") || msg.getContentRaw().equalsIgnoreCase("설명서") || args[0].equalsIgnoreCase("도움말")) {
+            else if(lowerArgs0.startsWith("명령어")||lowerArgs0.startsWith("help")||lowerArgs0.startsWith("guide") || lowerArgs0.startsWith("사용법") || lowerArgs0.startsWith("설명서") || lowerArgs0.startsWith("도움말")) {
             	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
+            	if(getType(lowerArgs0) == true) language = "eng";
             	
-            	Controller.help(tc, msg, event, language);
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("도움말") || lowerArgs0.startsWith("사용법") || lowerArgs0.startsWith("설명서") || lowerArgs0.startsWith("명령어")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	soWhich = getMistake;
+	            }
+	            
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("명령어")||args[0].equalsIgnoreCase("help")||args[0].equalsIgnoreCase("guide") || args[0].equalsIgnoreCase("사용법") || args[0].equalsIgnoreCase("설명서") || args[0].equalsIgnoreCase("도움말")) {
+	            	
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
+		            	soWhich = input;
+		     
+	            	}
+	            }
+	            
+	            if(soWhich.equals("확장") || soWhich.equals("전체") || soWhich.equalsIgnoreCase("extend") || soWhich.equalsIgnoreCase("all"))
+	            	Controller.showHelpOld(tc, msg, event, language);
+	            else
+	            	Controller.help(tc, msg, event, language);
             }
             
             else if(args[0].equalsIgnoreCase("후원")||args[0].equalsIgnoreCase("donate")) {
@@ -2365,6 +2928,36 @@ public class BotMusicListener extends ListenerAdapter {
             	logtc.sendMessage("<@297963786504110083>").queue();
             }
             
+            else if(args[0].contains("myinfo")||args[0].contains("myInfo")||args[0].equalsIgnoreCase("내정보")||args[0].equalsIgnoreCase("나의정보")) {
+            	String language = "kor";
+            	if(getType(args[0]) == true) language = "eng";
+            	
+            	EmbedBuilder eb = new EmbedBuilder();
+	        	eb.setColor(Color.decode(colorDefault));
+	        	
+	        	String kor = "집계 중...";
+	        	if(language.equals("eng"))
+	        		kor = "Picking...";
+	        	
+	        	eb.setAuthor(kor);
+	        	
+	        	String lan = language;
+	        	
+	        	if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+	        		String str = "링크 첨부";
+        			if(language.equals("eng"))
+        				str = "MESSAGE_EMBED_LINKS";
+        			
+        			tc.sendMessage(func.askPermission(str, language)).queue();
+        			log(tc, event, msg, "BOT: " + str);
+	            	return;
+	            }
+	    		
+	        	tc.sendMessage(eb.build()).queue(response -> {
+	        		Controller.showMyInfo(tc, msg, event, lan, response);
+	        	});
+            }
+            
             else if(args[0].contains("info")||args[0].equalsIgnoreCase("정보")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
@@ -2376,10 +2969,10 @@ public class BotMusicListener extends ListenerAdapter {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	showTime(tc, user, msg, language);}
+            	showTime(tc, user, msg, language);
+            }
         
-            else if(args[0].equalsIgnoreCase("자동끄기")||args[0].equalsIgnoreCase("타이머")||args[0].equalsIgnoreCase("timer")||args[0].equalsIgnoreCase("autooff")) {
-            	
+            else if(lowerArgs0.startsWith("자동끄기")||lowerArgs0.startsWith("타이머")||lowerArgs0.startsWith("timer")||lowerArgs0.startsWith("autooff")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2387,21 +2980,57 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
+            	if(getType(lowerArgs0) == true) language = "eng";
             	
-            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
-            	if(args.length <= 1) {
-                	MusicController.nowTimer(tc, msg,  event, language);         	
-                    return;
-                }
-                
-                if(input.contains("취소")||input.contains("끄기")||input.contains("제거")||input.contains("해제")||input.contains("off")||input.contains("cancel")||input.contains("remove")||input.contains("disable")) {
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("자동끄기")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("타이머")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            else if(lowerArgs0.startsWith("timer")) {
+	            	if(lowerArgs0.length() > 5)
+	            		substring = 5;
+	            }
+	            else if(lowerArgs0.startsWith("autooff")) {
+	            	if(lowerArgs0.length() > 7)
+	            		substring = 7;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	soWhich = getMistake;
+	            	
+	            }
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("자동끄기")||args[0].equalsIgnoreCase("타이머")||args[0].equalsIgnoreCase("timer")||args[0].equalsIgnoreCase("autooff")) {
+	            	
+	            	
+		            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).replaceAll(" ", "");
+		            	if(args.length <= 1) {
+		                	MusicController.nowTimer(tc, msg,  event, language);         	
+		                    return;
+		                }
+		                
+		            	soWhich = input;
+	            	}
+            	}
+            	
+            	if(soWhich.contains("취소")||soWhich.contains("끄기")||soWhich.contains("제거")||soWhich.contains("해제")||soWhich.contains("off")||soWhich.contains("cancel")||soWhich.contains("remove")||soWhich.contains("disable")) {
                 	MusicController.timerCancel(tc, msg,  event, language);
                 	return;
                 }
                 
-                if(func.isNumber(input)) {
-                	if(Integer.parseInt(input) <= 0) {
+                if(func.isNumber(soWhich)) {
+                	if(Integer.parseInt(soWhich) <= 0) {
                 		String langu = "시간은 최소 1분 이상이어야 해요";
                 		if(language.equals("eng")) 
                 			langu = "Time must over 1 minute.";
@@ -2413,7 +3042,7 @@ public class BotMusicListener extends ListenerAdapter {
                 	}
                 	
                 	else {
-                		MusicController.timer(tc, msg, user, Integer.parseInt(input), event, language);
+                		MusicController.timer(tc, msg, user, Integer.parseInt(soWhich), event, language);
                 		
                 	}
                 }
@@ -2426,11 +3055,10 @@ public class BotMusicListener extends ListenerAdapter {
                 	System.out.println("BOT: " + langu);
                 	log(tc, event, msg, "BOT: " + langu);
                 }
-            	
-            	
+       
             }
             
-            else if(args[0].equalsIgnoreCase("소리")||args[0].equalsIgnoreCase("음량")||args[0].equalsIgnoreCase("볼륨")||args[0].equalsIgnoreCase("sound")||args[0].equalsIgnoreCase("vol")||args[0].equalsIgnoreCase("volume")) {
+            else if(lowerArgs0.startsWith("소리")||lowerArgs0.startsWith("음량")||lowerArgs0.startsWith("볼륨")||lowerArgs0.startsWith("sound")||lowerArgs0.startsWith("vol")||lowerArgs0.startsWith("volume")) {
             	MusicController.checkLock(tc, user, event);
             	if(ret == 1) {
             		ret = 0;
@@ -2438,18 +3066,67 @@ public class BotMusicListener extends ListenerAdapter {
             	}
             	
             	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
+            	if(getType(lowerArgs0) == true) language = "eng";
             	
-            	String vc = "";
-                try{ 
-                	vc =args[1];
-                } 
-                catch(Exception e){
-                	MusicController.nowVolume(tc, msg, event, language);
-                    return;
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("소리") || lowerArgs0.startsWith("음량") || lowerArgs0.startsWith("볼륨")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	            else if(lowerArgs0.startsWith("vol")) {
+	            	if(lowerArgs0.length() > 3)
+	            		substring = 3;
+	            }
+	            else if(lowerArgs0.startsWith("sound")) {
+	            	if(lowerArgs0.length() > 5)
+	            		substring = 5;
+	            }
+	            else if(lowerArgs0.startsWith("volume")) {
+	            	if(lowerArgs0.length() > 6)
+	            		substring = 6;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	
+	            	soWhich = getMistake;
+	            }
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("소리")||args[0].equalsIgnoreCase("음량")||args[0].equalsIgnoreCase("볼륨")||args[0].equalsIgnoreCase("sound")||args[0].equalsIgnoreCase("vol")||args[0].equalsIgnoreCase("volume")) {
+	            	
+		                try{ 
+		                	soWhich = args[1];
+		                } 
+		                catch(Exception e){
+		                	MusicController.nowVolume(tc, msg, event, language);
+		                    return;
+		                }
+	            	}
+	            }
+
+                if(soWhich.equals("기본") || soWhich.equals("초기화") || soWhich.equals("default") || soWhich.equals("reset"))
+                	soWhich = "15";
+
+
+                if(Integer.parseInt(soWhich) < 0 || Integer.parseInt(soWhich) > 100) {
+                	String langu = "1~100중에서 입력하세요";
+                	if(language.equals("eng"))
+                		langu = "Please input between 1 and 100.";
+                	
+                	tc.sendMessage(langu).queue();
+                	System.out.println("BOT: " + langu);
+                	
+	        		log(tc, event, msg, "BOT: " + langu);
+	        		
+                	return;
                 }
                 
-                if(!func.isNumber(vc)) {
+                else if(!func.isNumber(soWhich)) {
                 	String langu = "올바르게 입력해 주세요";
                 	if(language.equals("eng"))
                 		langu = "Please input correctly.";
@@ -2461,52 +3138,16 @@ public class BotMusicListener extends ListenerAdapter {
                 	return;
                 }
                 
-                if(Integer.parseInt(args[1])<0 || Integer.parseInt(args[1])>100) {
-                	String langu = "1~100중에서 입력하세요";
-                	if(language.equals("eng"))
-                		langu = "Please input between 1 and 100.";
-                	
-                	tc.sendMessage(langu).queue();
-                	System.out.println("BOT: " + langu);
-                	
-	        		log(tc, event, msg, "BOT: " + langu);
-                	return;
-                }
                 
-            	MusicController.volume(tc, Integer.parseInt(args[1]), event, language);
+            	MusicController.volume(tc, Integer.parseInt(soWhich), event, language);
             	
             }
             
-            else if(args[0].equalsIgnoreCase("ㄴㄴ")||args[0].equalsIgnoreCase("취소")||args[0].equalsIgnoreCase("cancel")||args[0].equalsIgnoreCase("return")) {
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-            	
+            else if(lowerArgs0.startsWith("저장목록")||lowerArgs0.startsWith("저장된목록")||lowerArgs0.startsWith("savedlist")||lowerArgs0.startsWith("savelist")) {
             	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-            	MusicController.cancel(tc, msg, event, language);
-            }
-            
-            else if(args[0].equalsIgnoreCase("저장목록")||args[0].equalsIgnoreCase("저장된목록")||args[0].equalsIgnoreCase("savedlist")||args[0].equalsIgnoreCase("savelist")) {
-            	String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-            	if(guild1.getId().equals(born)) {
-	            	String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-	            	if(args.length <= 1) {
-	            		input = "1";
-	            		fn = 2;
-	            	}
-	
-	            	MusicController.savedlist(tc, msg, event, Integer.parseInt(input), fn, language);
-	            	
-	            	page = Integer.parseInt(input);
-            	}
-            	
-            	else {
+            	if(getType(lowerArgs0) == true) language = "eng";
+
+            	if(!Main.saveQueueAllowGuild.contains(guild1.getId())) {
             		String langu = "여기서는 쓸 수 없는 기능이에요";
             		if(language.equals("eng")) langu = "Can't use it in this server.";
             		
@@ -2514,20 +3155,74 @@ public class BotMusicListener extends ListenerAdapter {
             		System.out.println(guild1.toString() + " BOT: " + langu);
             		
 	        		log(tc, event, msg, guild1.toString() + " BOT: " + langu);
+	        		
+	        		return;
             	}
-           
+            	
+            	int fn = 0;
+            	
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("저장목록")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("저장된목록")) {
+	            	if(lowerArgs0.length() > 5)
+	            		substring = 5;
+	            }
+	            else if(lowerArgs0.startsWith("savedlist")) {
+	            	if(lowerArgs0.length() > 9)
+	            		substring = 9;
+	            }
+	            else if(lowerArgs0.startsWith("savelist")) {
+	            	if(lowerArgs0.length() > 8)
+	            		substring = 8;
+	            }
+	            
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	
+	            	soWhich = getMistake;
+	            	
+	            }
+	            else {
+		            //original
+	            	if(args[0].equalsIgnoreCase("저장목록")||args[0].equalsIgnoreCase("저장된목록")||args[0].equalsIgnoreCase("savedlist")||args[0].equalsIgnoreCase("savelist")) {
+	            	
+			            String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+			            if(args.length <= 1) {
+			            	input = "1";
+			            	fn = 2;
+			            }
+			            soWhich = input;
+			            	
+			            
+	            	}
+	            }
+	            
+	            MusicController.savedlist(tc, msg, event, Integer.parseInt(soWhich), fn, language);
             }
             
             else if(args[0].equalsIgnoreCase("저장")||args[0].equalsIgnoreCase("save")) {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	if(guild1.getId().equals(born)||guild1.getId().equals(base)) {
-	            	
-	            	MusicController.savePersonalPlaylist(tc, msg, event, event.getAuthor().getId(), language);
-	            	
+            	if(Main.loadAllowGuild.contains(guild1.getId())||Main.loadAllowUser.contains(user.getId())) {
+            		if(args.length > 1) {
+            			String lan = "저장 명령어는 뒤에 아무것도 붙지 않아요";
+            			if(language.equals("eng"))
+            				lan = "Save command doesn't follow anything.";
+            			
+            			tc.sendMessage(lan).queue();
+            			log(tc, event, msg, "BOT: " + lan);
+            		}
+            		else
+            			MusicController.savePersonalPlaylist(tc, msg, event, event.getAuthor().getId(), language);
             	}
-            	
             	else {
             		String langu = "여기서는 쓸 수 없는 기능이에요";
             		if(language.equals("eng")) langu = "Can't use it in this server.";
@@ -2538,45 +3233,6 @@ public class BotMusicListener extends ListenerAdapter {
 	        		log(tc, event, msg, guild1.toString() + "BOT: " + langu);
             	}
            
-            }
-            
-            else if(args[0].equalsIgnoreCase("멈춤")||args[0].equalsIgnoreCase("중지")||args[0].equalsIgnoreCase("나가게")||args[0].equalsIgnoreCase("낙가ㅣ")||args[0].equalsIgnoreCase("나각기")||args[0].equalsIgnoreCase("나가ㅣ")||args[0].equalsIgnoreCase("나가기")||args[0].equalsIgnoreCase("exit")||args[0].equalsIgnoreCase("out")||args[0].equalsIgnoreCase("stop")||args[0].equalsIgnoreCase("leave")||args[0].equalsIgnoreCase("disconnect")||args[0].equalsIgnoreCase("dc")){
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-            	
-            	Guild guild = event.getGuild();
-                AudioManager manager = guild.getAudioManager();
-                
-                String language = "kor";
-            	if(getType(args[0]) == true) language = "eng";
-            	
-                if(guild.getId().equals(born)) {
-                	 MusicController.stopPlaying(tc, msg, event, 0, 2, language);
-                }
-                else {
-                	MusicController.stopPlaying(tc, msg, event, 0, 0, language);
-                }
-                
-	            manager.closeAudioConnection();
-	
-            }
-            
-            else if(args[0].equalsIgnoreCase("outNotSave")||args[0].equalsIgnoreCase("exitNotSave")){
-            	MusicController.checkLock(tc, user, event);
-            	if(ret == 1) {
-            		ret = 0;
-            		return;
-            	}
-            	Guild guild = event.getGuild();
-                AudioManager manager = guild.getAudioManager();
-                
-              
-                MusicController.stopPlaying(tc, msg, event, 0, 0, "kor");
-	            manager.closeAudioConnection();
- 
             }
             
             else if(args[0].equalsIgnoreCase("핑")||args[0].equalsIgnoreCase("ping")||args[0].equalsIgnoreCase("PING")||args[0].equalsIgnoreCase("PONG")||args[0].equalsIgnoreCase("pong")||args[0].equalsIgnoreCase("지연시간")||args[0].equalsIgnoreCase("네트워크")||args[0].equalsIgnoreCase("latency")||args[0].equalsIgnoreCase("network")||args[0].equalsIgnoreCase("NETWORK")||args[0].equalsIgnoreCase("LATENCY")) {
@@ -2592,12 +3248,235 @@ public class BotMusicListener extends ListenerAdapter {
             	String language = "kor";
             	if(getType(args[0]) == true) language = "eng";
             	
-            	
             	long nowTime = System.currentTimeMillis();
             	Controller.upTime(tc, msg, event, (int)(nowTime - gunbamStartTime), language);
             	
             }
-             
+            
+            else if(lowerArgs0.startsWith("날씨")||lowerArgs0.startsWith("현재날씨")||lowerArgs0.startsWith("오늘날씨")) {
+        		if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+        			String str = "링크 첨부";
+        			
+        			tc.sendMessage(func.askPermission(str, "kor")).queue();
+        			log(tc, event, msg, "BOT: " + str);
+    	        	return;
+    	        }
+        		
+            	String soWhich = "";
+            	String getMistake = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	
+            	int substring = 0;
+            	
+	            if(lowerArgs0.startsWith("현재날씨") || lowerArgs0.startsWith("오늘날씨")) {
+	            	if(lowerArgs0.length() > 4)
+	            		substring = 4;
+	            }
+	            else if(lowerArgs0.startsWith("날씨")) {
+	            	if(lowerArgs0.length() > 2)
+	            		substring = 2;
+	            }
+	           
+	            if(substring != 0) {
+	            	getMistake = getMistake.substring(substring);
+	            	
+	            	soWhich = getMistake;
+	            }
+	            else {
+	            	//original
+	            	if(args[0].equalsIgnoreCase("날씨")||args[0].equalsIgnoreCase("현재날씨")||args[0].equalsIgnoreCase("오늘날씨")) {
+	            		String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+	            		
+		            	if(args.length < 2) {
+		            		tc.sendMessage("도시 이름도 입력해주세요").queue();
+		            		return;
+		            	}
+		            	
+		            	soWhich = input;
+	            	}
+	            }
+	            
+	            soWhich = soWhich.replaceAll(" ", "");
+	            
+	            Controller.weatherToday(tc, msg, event, soWhich);
+            	
+            }
+            
+            else if(args[0].equalsIgnoreCase("권한") || args[0].equalsIgnoreCase("설정") || args[0].equalsIgnoreCase("permission") || args[0].equalsIgnoreCase("setting")) {
+            	String language = "kor";
+            	if(getType(args[0]) == true) language = "eng";
+            	
+            	Controller.showPermissions(tc, msg, event, language);
+            }
+
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("명령어무시")||args[0].equalsIgnoreCase("ignoreprefix"))) {
+            	if(args.length < 2) {
+            		Controller.showIgnorePrefix(tc, msg, event);
+            	}
+            	else {
+            		if(args[1].contains("ㅣ")) {
+            			tc.sendMessage("ㅣ가 포함되어 있으면 안돼요").queue();
+            			return;
+            		}
+            		
+            		if(Main.ignorePrefix.contains(args[1])) {
+            			tc.sendMessage("`" + args[1] + "`는 이미 추가되어 있어요").queue();
+            			return;
+            		}
+            		Main.ignorePrefix.add(args[1]);
+            		
+            		Runnable write = () -> {
+        				File file = new File(BotMusicListener.directoryDefault + "ignorePrefix.txt");
+        				try {
+        					FileWriter fw = new FileWriter(file, true);
+        					fw.append(args[1] + "\n");
+        					
+        					fw.close();
+        				}
+        				catch (Exception e) {
+        					e.printStackTrace();
+        					tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();  
+        					log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
+        				}
+        			};
+        			
+        			Thread t = new Thread(write);
+        			t.start();
+        			
+            		tc.sendMessage("접두사 `" + args[1] + "`로 시작하는 메세지를 받으면 무시해요").queue();
+            	}
+            }
+            
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("명령어무시취소")||args[0].equalsIgnoreCase("ignoreprefixcancel"))) {
+            	if(args.length < 2) {
+            		Controller.showIgnorePrefix(tc, msg, event);
+            	}
+            	else {
+            		if(Main.ignorePrefix.contains(args[1])) {
+	            		
+	            		Runnable write = () -> {
+	            			Main.ignorePrefix.remove(args[1]);
+		            		
+		            		StringBuilder sb = new StringBuilder();
+		            		for(int i = 0; i<Main.ignorePrefix.size(); i++) {
+		            			sb.append(Main.ignorePrefix.get(i) + "\n");
+		            		}
+		            		
+	        				File file = new File(BotMusicListener.directoryDefault + "ignorePrefix.txt");
+	        				try {
+	        					FileWriter fw = new FileWriter(file);
+	        					fw.write(sb.toString());
+	        					
+	        					fw.close();
+	        				}
+	        				catch (Exception e) {
+	        					e.printStackTrace();
+	        					tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();  
+	        					log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
+	        				}
+	        			};
+	        			
+	        			Thread t = new Thread(write);
+	        			t.start();
+	        			
+	            		tc.sendMessage("접두사 `" + args[1] + "`로 시작하는 메세지에 반응해요").queue();
+            		}
+            		else {
+            			tc.sendMessage("접두사 `" + args[1] + "`는 무시대상에 없어요").queue();
+            		}
+            	}
+            }
+            
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("무시")||args[0].equalsIgnoreCase("ignore"))) {
+            	if(args.length < 2) {
+            		Controller.showIgnoreArgs0(tc, msg, event);
+            	}
+            	else {
+            		String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            		if(input.startsWith("https://")) {
+            			tc.sendMessage("URL는 무시 대상에 추가하지 않아요").queue();
+            			return;
+            		}
+
+            		if(Main.ignoreArgs0.contains(input)) {
+            			tc.sendMessage("`" + input + "`는 이미 추가되어 있어요").queue();
+            			return;
+            		}
+            		Main.ignoreArgs0.add(input);
+            		
+            		Runnable write = () -> {
+        				File file = new File(BotMusicListener.directoryDefault + "ignoreArgs0.txt");
+        				try {
+        					FileWriter fw = new FileWriter(file, true);
+        					fw.append(input + "\n");
+        					
+        					fw.close();
+        				}
+        				catch (Exception e) {
+        					e.printStackTrace();
+        					tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();  
+        					log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
+        				}
+        			};
+        			
+        			Thread t = new Thread(write);
+        			t.start();
+        			
+            		tc.sendMessage("`" + input + "`을 검색할지 선택하는 메세지를 보내지 않아요").queue();
+            	}
+            }
+            
+            else if(user.getId().equals(admin) && (args[0].equalsIgnoreCase("무시취소")||args[0].equalsIgnoreCase("ignorecancel"))) {
+            	if(args.length < 2) {
+            		Controller.showIgnoreArgs0(tc, msg, event);
+            	}
+            	else {
+            		String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            		
+            		if(Main.ignoreArgs0.contains(input)) {
+	            		
+	            		Runnable write = () -> {
+	            			Main.ignoreArgs0.remove(input);
+		            		
+		            		StringBuilder sb = new StringBuilder();
+		            		for(int i = 0; i<Main.ignoreArgs0.size(); i++) {
+		            			sb.append(Main.ignoreArgs0.get(i) + "\n");
+		            		}
+		            		
+	        				File file = new File(BotMusicListener.directoryDefault + "ignoreArgs0.txt");
+	        				try {
+	        					FileWriter fw = new FileWriter(file);
+	        					fw.write(sb.toString());
+	        					
+	        					fw.close();
+	        				}
+	        				catch (Exception e) {
+	        					e.printStackTrace();
+	        					tc.sendMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();  
+	        					log(tc, event, msg, ":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e));
+	        				}
+	        			};
+	        			
+	        			Thread t = new Thread(write);
+	        			t.start();
+	        			
+	            		tc.sendMessage("`" + input + "`을 유튜브에서 검색할지 선택하는 메세지를 보내요").queue();
+            		}
+            		else {
+            			tc.sendMessage("`" + input + "`는 무시대상에 없어요").queue();
+            		}
+            	}
+            }
+           
+            else { // 이도저도 아닐 때
+            	if(msg.getContentRaw().startsWith("$")) return;
+            	if(args[0].equalsIgnoreCase("ㄴㄴ")||args[0].equalsIgnoreCase("취소")||args[0].equalsIgnoreCase("되돌리기")||args[0].equalsIgnoreCase("cancel")||args[0].equalsIgnoreCase("return")) return;
+            	if((user.getId().equals(admin)||Main.clearAllowUser.contains(user.getId()))&&(args[0].equalsIgnoreCase("myclear")||args[0].equalsIgnoreCase("mc")||args[0].equalsIgnoreCase("ㅡㅊ")||args[0].equalsIgnoreCase("c")||args[0].equalsIgnoreCase("clear")||args[0].equalsIgnoreCase("ㅊ")||args[0].equalsIgnoreCase("update")||args[0].equalsIgnoreCase("업데이트"))) return;
+            	
+            	String input = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
+            	if(Main.ignoreArgs0.contains(input)) return;
+            	
+            	MusicController.wantToPlay(tc, msg, event, input);
+            }
         }
         
     }
@@ -2732,7 +3611,7 @@ public class BotMusicListener extends ListenerAdapter {
 	    			response.editMessage("`" + who + "` 이네요\n```속해 있는 서버 목록\n\n" + where + "\n" + (long)(endTime - startTime) + "ms```").queue();
 	    		}
 	    		catch(Exception e) {
-	    			response.editMessage(":no_entry_sign: **" + e.getMessage() + func.cause(e)).queue();
+	    			response.editMessage(":no_entry_sign: **" + e.getMessage() + "**" + func.cause(e)).queue();
 	    		}
 	    	}
 		}
@@ -2742,8 +3621,7 @@ public class BotMusicListener extends ListenerAdapter {
 	}
 	
 
-	public void informationAboutId(TextChannel tc, Message msg, Message response) {
-		String id = msg.getContentRaw().replaceAll("[^0-9]", "");
+	public void informationAboutId(TextChannel tc, Message msg, Message response, String id) {
 		
 		try { // 길드 찾기 시도
 			tc.getJDA().getGuildById(id).getName();
@@ -2752,7 +3630,7 @@ public class BotMusicListener extends ListenerAdapter {
 		catch(Exception e) { // 유저 찾기 시도
 			try {
 				tc.getJDA().getUserById(id).getName();
-				informationUser(tc, id, response);
+				informationUser(tc, msg, id, response);
 			}
 			catch(Exception f) { // 텍스트채널 찾기 시도
 				try {
@@ -2767,8 +3645,15 @@ public class BotMusicListener extends ListenerAdapter {
 					catch(Exception h) {
 						EmbedBuilder eb = new EmbedBuilder();
 						eb.setColor(Color.decode(colorDefault));
-						eb.setTitle(":no_entry_sign: " + e.getMessage() + func.cause(h));
+						eb.setTitle(":no_entry_sign: " + h);
 						
+						if(!tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS)) {
+							String str = "링크 첨부";
+		        			
+		        			tc.sendMessage(func.askPermission(str, "kor")).queue();
+		        			
+			            	return;
+			            }
 						response.editMessage(eb.build()).queue();
 					}
 				}
@@ -2779,21 +3664,16 @@ public class BotMusicListener extends ListenerAdapter {
 	public void informationGuild(TextChannel tc, String id, Message response) {
 		Guild guild = tc.getJDA().getGuildById(id);
 		
-		String iconUrl = "";
-		try {
-			iconUrl = guild.getIconUrl() + "?size=2048";
-		}
-		catch(Exception e) {
-			iconUrl = null;
-		}
-		
 		OffsetDateTime create = guild.getTimeCreated();
 		int botCount = 0, onlineCount = 0, idleCount = 0, busyCount = 0, offlineCount = 0;
 		
 		EmbedBuilder eb = new EmbedBuilder();
 		
-		if(iconUrl != null) 
-			eb.setThumbnail(iconUrl);
+		try {
+			eb.setThumbnail(guild.getIconUrl() + "?size=2048");
+		}
+		catch(Exception e) {}
+		
 		eb.setTitle("서버 정보");
 		eb.setColor(Color.decode(colorDefault));
 		eb.addField("이름", guild.getName(), true);
@@ -2802,7 +3682,7 @@ public class BotMusicListener extends ListenerAdapter {
 		
 		eb.addField("부스트 수", guild.getBoostCount() + "", true);
 		eb.addField("지역", guild.getRegionRaw(), true);
-		eb.addField("생성일", create.getYear() + "." + create.getMonthValue() + "." + create.getDayOfMonth(), true);
+		eb.addField("생성일", func.createTime(create), true);
 		
 		eb.addField("유저 수", guild.getMembers().size() + "", true);
 		
@@ -2815,53 +3695,64 @@ public class BotMusicListener extends ListenerAdapter {
 			else offlineCount = offlineCount + 1;
 		}
 		eb.addField("봇 수", botCount + "" , true);
-		eb.addField("상태", ":green_circle: " + onlineCount + " :yellow_circle: " + idleCount + " :red_circle: " + busyCount + " :white_circle: " + offlineCount , true);
+		eb.addField("상태", ":green_circle: " + onlineCount + " :yellow_circle: " + idleCount + " :red_circle: " + busyCount + " :white_circle: " + offlineCount, true);
 		
 		eb.addField("텍스트 채널 수", guild.getTextChannels().size() + "", true);
 		eb.addField("음성채널 수", guild.getVoiceChannels().size() + "", true);
-		eb.addField("규칙 수", guild.getRoles().size() + "", true);
+		eb.addField("역할 수", guild.getRoles().size() + "", true);
 		
 		
 		response.editMessage(eb.build()).queue();
-	
+		
 	}
 	
-	public void informationUser(TextChannel tc, String id, Message response) {
+	@SuppressWarnings("deprecation")
+	public void informationUser(TextChannel tc, Message msg, String id, Message response) {
 		User user = tc.getJDA().getUserById(id);
-		String avatarUrl = "";
-		try {
-			avatarUrl = user.getAvatarUrl() + "?size=2048";
-		}
-		catch(Exception e) {
-			avatarUrl = null;
-		}
 		
 		String isBot = "예";
-		String hasPrivate = "예";
 		String isFake = "예";
 		
 		if(user.isBot() == false) 
 			isBot = "아니오";
-		if(user.hasPrivateChannel() == false)
-			hasPrivate = "아니오";
+		
 		if(user.isFake() == false)
 			isFake = "아니오";
 		
 		OffsetDateTime create = user.getTimeCreated();
-
-		EmbedBuilder eb = new EmbedBuilder();
 		
-		if(avatarUrl != null) 
-			eb.setThumbnail(avatarUrl);
+		EmbedBuilder eb = new EmbedBuilder();
+		try {
+			eb.setThumbnail(user.getAvatarUrl() + "?size=2048");
+		}
+		catch(Exception e) {
+			eb.setThumbnail(user.getDefaultAvatarUrl() + "?size=2048");
+		}
+		
 		eb.setTitle("유저 정보");
 		eb.setColor(Color.decode(colorDefault));
-		eb.addField("이름", user.getAsTag(), true);
-		eb.addField("아이디", id, true);
-		eb.addField("생성일", create.getYear() + "." + create.getMonthValue() + "." + create.getDayOfMonth(), true);
 		
+		if(tc.getGuild().getMemberById(id) != null) {
+			if(tc.getGuild().getMemberById(id).getNickname() != null)
+				eb.addField("이름", tc.getGuild().getMemberById(id).getNickname() + "\n(" + user.getAsTag() + ")", true);
+		}
+		else eb.addField("이름", user.getAsTag(), true);
+		
+		eb.addField("생성일", func.createTime(create), true);
+		
+		if(tc.getGuild().getMemberById(id) != null) {
+			OffsetDateTime enter = tc.getGuild().getMemberById(id).getTimeJoined();
+			
+			eb.addField("서버입장", func.createTime(enter), true);
+			eb.addField("상태", tc.getGuild().getMemberById(id).getOnlineStatus().toString(), true);
+		}
+
 		eb.addField("봇 여부", isBot, true);
-		eb.addField("비밀채널 여부", hasPrivate, true);
 		eb.addField("가짜 여부", isFake, true);
+		
+		if(tc.getGuild().getMemberById(id) != null && tc.getGuild().getMemberById(id).getTimeBoosted() != null) {
+			eb.addField("부스트 시작", func.createTime(tc.getGuild().getMemberById(id).getTimeBoosted()), true);
+		}
 		
 		eb.addField("군밤이와 함께인 서버 수", user.getMutualGuilds().size() + "", true);
 		
@@ -2870,6 +3761,7 @@ public class BotMusicListener extends ListenerAdapter {
 	}
 	
 	public void informationTC(TextChannel tc, String id, Message response) {
+		
 		TextChannel textChannel = tc.getJDA().getTextChannelById(id);
 		
 		OffsetDateTime create = textChannel.getTimeCreated();
@@ -2886,12 +3778,30 @@ public class BotMusicListener extends ListenerAdapter {
 		eb.addField("위치", textChannel.getGuild().getName(), true);
 		eb.addField("위치 아이디", textChannel.getGuild().getId(), true);
 		
-		eb.addField("분류", textChannel.getParent().getName(), true);
-		eb.addField("생성일", create.getYear() + "." + create.getMonthValue() + "." + create.getDayOfMonth(), true);
+		try {
+			eb.addField("분류", textChannel.getParent().getName(), true);
+		}
+		catch(Exception e) {
+			eb.addField("분류", "", true);
+		}
+		eb.addField("생성일", func.createTime(create), true);
+
+		eb.addField("성인 인증", isNSFW, true);
 		eb.addField("멤버 수", textChannel.getMembers().size() + "", true);
 		
-		eb.addField("채널 주제", textChannel.getTopic(), true);
-		eb.addField("성인 인증", isNSFW, true);
+		int botCount = 0;
+		for(int i = 0; i<textChannel.getMembers().size(); i++) {
+			if(textChannel.getMembers().get(i).getUser().isBot() == true)
+				botCount = botCount + 1;
+		}
+		eb.addField("봇 수", botCount + "", true);
+		eb.addField("슬로우 시간", func.slowModeSec(textChannel.getSlowmode()), true);
+		
+		try {
+			if(!textChannel.getTopic().toString().equals(""))
+				eb.addField("채널 주제", textChannel.getTopic(), true);
+		}
+		catch(Exception e) {}
 		
 		response.editMessage(eb.build()).queue();
 		
@@ -2910,17 +3820,17 @@ public class BotMusicListener extends ListenerAdapter {
 		
 		EmbedBuilder eb = new EmbedBuilder();
 		
-		eb.setTitle("음성채널 정보");
+		eb.setTitle("음성채널 ");
 		eb.setColor(Color.decode(colorDefault));
 		eb.addField("이름", voiceChannel.getName(), true);
 		eb.addField("위치", voiceChannel.getGuild().getName(), true);
 		eb.addField("위치 아이디", voiceChannel.getGuild().getId(), true);
 		
 		eb.addField("분류", voiceChannel.getParent().getName(), true);
-		eb.addField("생성일", create.getYear() + "." + create.getMonthValue() + "." + create.getDayOfMonth(), true);
+		eb.addField("생성일", func.createTime(create), true);
 		eb.addField("음질", voiceChannel.getBitrate()/1000 + "kbps", true);
 		
-		eb.addField("유저제한", limit, true);
+		eb.addField("유저제한", limit + "", true);
 		eb.addField("이용자 수", voiceChannel.getMembers().size() + "", true);
 		
 		response.editMessage(eb.build()).queue();
@@ -2930,7 +3840,7 @@ public class BotMusicListener extends ListenerAdapter {
 	
 	public void log(TextChannel tc, MessageReceivedEvent event, Message msg, String str) {
 		if(logOn == 1) {
-			if(user.toString().contains(admin)||tc.getGuild().toString().contains(base)||tc.getId().equals("717203670365634621")) {}
+			if(user.getId().equals(admin)||tc.getGuild().toString().contains(base)||tc.getId().equals("717203670365634621")) {}
 			else 
 				logtc.sendMessage(str).queue();
 		}
